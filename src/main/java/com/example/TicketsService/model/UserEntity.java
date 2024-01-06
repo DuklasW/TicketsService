@@ -1,6 +1,6 @@
 package com.example.TicketsService.model;
 //TODO dodać kubernetis, po stworzeniu pierwszego połączenia z bazą
-//TODO dalej kontynuować CQRS(raczej idziemy z CRUD), REST, paypal jako sandobx?
+//TODO dalej kontynuować CQRS(raczej idziemy z CRUD), REST, paypal jako sandobx
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
