@@ -1,21 +1,16 @@
 package com.example.TicketsService.repository;
 
+import com.example.TicketsService.model.RefreshTokenEntity;
 import com.example.TicketsService.model.UserEntity;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends MongoRepository<UserEntity, ObjectId> {
+public interface RefreshTokenRepository extends MongoRepository<RefreshTokenEntity, ObjectId> {
+    Optional<RefreshTokenEntity> findByToken(String token);
 
-    Optional<UserEntity> findByEmail(String email);
-
-    List<UserEntity> findAllByRoles(String role);
-
-    Boolean existsByEmail(String email);
-
-    void deleteById(ObjectId id);
+    Integer deleteByUserEntity(UserEntity userEntity);
 }

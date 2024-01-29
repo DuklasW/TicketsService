@@ -16,10 +16,37 @@ import java.util.Date;
 public class PurchaseEntity {
 
     @Id
-    private ObjectId id;
-    private ObjectId eventId;
+    private String id;
+    private String eventId;
     private Date date;
-    private ObjectId consumerId;
+    private String consumerId;
     private Integer tickets;
-    private String sattusPay;
+    private String statusPay;
+
+    public PurchaseEntity(ObjectId id, ObjectId eventId, Date date, ObjectId consumerId, Integer tickets, String statusPay) {
+        this.id = id.toHexString();
+        this.eventId = eventId.toHexString();
+        this.date = date;
+        this.consumerId = consumerId.toHexString();
+        this.tickets = tickets;
+        this.statusPay = statusPay;
+    }
+    public PurchaseEntity(ObjectId eventId, Date date, ObjectId consumerId, Integer tickets, String statusPay) {
+        this.eventId = eventId.toHexString();
+        this.date = date;
+        this.consumerId = consumerId.toHexString();
+        this.tickets = tickets;
+        this.statusPay = statusPay;
+    }
+
+
+    public ObjectId getIdByObjectId(){
+        return new ObjectId(this.id);
+    }
+    public ObjectId getEventIdByObjectId(){
+        return new ObjectId(this.id);
+    }
+    public ObjectId getConsumerIdByObjectId(){
+        return new ObjectId(this.id);
+    }
 }

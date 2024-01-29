@@ -3,6 +3,7 @@ package com.example.TicketsService.service;
 
 import com.example.TicketsService.model.UserEntity;
 import com.example.TicketsService.repository.UserRepository;
+import com.example.TicketsService.security.jwt.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +17,27 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
-    public List<UserEntity> allUsers(){
-        return userRepository.findAll();
+
+    public List<UserEntity> getAllUsers(){ return userRepository.findAll(); }
+
+    public UserEntity save(UserEntity user){
+        return userRepository.save(user);
     }
 
-    //ponieważ może nie zwrócić nic
-    public Optional<UserEntity> singleUser(ObjectId id) {
+    //Optional ponieważ może nie zwrócić nic
+    public Optional<UserEntity> getUserByUserId(ObjectId id) {
         return userRepository.findById(id);
     }
+
+    public Optional<UserEntity> getUserByUserEmail(String email) { return userRepository.findByEmail(email); }
+
+    public List<UserEntity> getAllUsersByRoles(String role) { return  userRepository.findAllByRoles(role); }
+
+    public boolean checkUserExistByEmail(String email) { return  userRepository.existsByEmail(email); }
+
+    public void deleteByUserId(ObjectId userId){
+        userRepository.deleteById(userId);
+    }
+
+
 }

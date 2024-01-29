@@ -1,6 +1,7 @@
 package com.example.TicketsService.model;
 
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,11 +15,33 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "artists")
 public class ArtistEntity {
     @Id
-    private ObjectId id;
-    private ObjectId menagerId;
-    private String publicId;
+    private String id;
+    @NotBlank
+    private String managerId;
+    @NotBlank
     private String name;
     private String surname;
     private String nickname;
+    @NotBlank
     private String description;
+    private Boolean isActive;
+
+    public ArtistEntity(ObjectId managerId, String name, String surname, String nickname, String description, Boolean isActive){
+        this.managerId = managerId.toHexString();
+        this.name = name;
+        this.surname = surname;
+        this.nickname = nickname;
+        this.description = description;
+        this.isActive = isActive;
+    }
+
+    public ArtistEntity(ObjectId id, ObjectId managerId, String name, String surname, String nickname, String description, Boolean isActive) {
+        this.id = id.toHexString();
+        this.managerId = managerId.toHexString();
+        this.name = name;
+        this.surname = surname;
+        this.nickname = nickname;
+        this.description = description;
+        this.isActive = isActive;
+    }
 }

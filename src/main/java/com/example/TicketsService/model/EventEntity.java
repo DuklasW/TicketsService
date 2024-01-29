@@ -1,5 +1,8 @@
 package com.example.TicketsService.model;
 
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,17 +20,66 @@ import java.util.List;
 public class EventEntity {
 
     @Id
-    private ObjectId id;
+    private String id;
+    @NotBlank
     private Date date;
-    private List<ObjectId> artistId;
+    private List<String> artistName;
+    @NotNull
     private Double price;
+    @NotNull
     private Integer numberTickets;
+    @NotBlank
     private String location;
+    @NotBlank
     private String city;
+    @NotBlank
+    @Pattern(regexp = "^\\[0-9]{2}-[0-9]{3}$", message = "Invalid postcode number")
     private String postcode;
+    @NotBlank
     private String regon;
+    @NotBlank
     private String street;
-    private ObjectId createdBy;
+    @NotBlank
+    private String createdBy;
+    @NotBlank
     private String name;
+    @NotBlank
     private String description;
+
+
+
+    public EventEntity(Date date, List<String> artistId, Double price, Integer numberTickets, String location, String city, String postcode, String regon, String street, ObjectId createdBy, String name, String description) {
+        this.date = date;
+        this.artistName = artistId;
+        this.price = price;
+        this.numberTickets = numberTickets;
+        this.location = location;
+        this.city = city;
+        this.postcode = postcode;
+        this.regon = regon;
+        this.street = street;
+        this.createdBy = createdBy.toHexString();
+        this.name = name;
+        this.description = description;
+    }
+
+    public EventEntity(ObjectId id, Date date, List<String> artistName, Double price, Integer numberTickets, String location, String city, String postcode, String regon, String street, ObjectId createdBy, String name, String description) {
+        this.id = id.toHexString();
+        this.date = date;
+        this.artistName = artistName;
+        this.price = price;
+        this.numberTickets = numberTickets;
+        this.location = location;
+        this.city = city;
+        this.postcode = postcode;
+        this.regon = regon;
+        this.street = street;
+        this.createdBy = createdBy.toHexString();
+        this.name = name;
+        this.description = description;
+    }
+
+    public ObjectId getIdAsObjectId(){
+        return new ObjectId(this.id);
+    }
 }
