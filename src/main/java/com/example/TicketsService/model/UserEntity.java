@@ -1,6 +1,4 @@
 package com.example.TicketsService.model;
-//TODO dodać kubernetis, po stworzeniu pierwszego połączenia z bazą
-//TODO dalej kontynuować  z REST CRUD api with Service-Repository Pattern, paypal jako sandobx
 import com.example.TicketsService.model.enums.RoleEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
