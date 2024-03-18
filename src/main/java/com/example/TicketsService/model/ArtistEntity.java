@@ -15,9 +15,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "artists")
 public class ArtistEntity {
     @Id
-    private String id;
+    private ObjectId id;
     @NotBlank
-    private String managerId;
+    private ObjectId managerId;
     @NotBlank
     private String name;
     private String surname;
@@ -26,18 +26,8 @@ public class ArtistEntity {
     private String description;
     private Boolean isActive;
 
-    public ArtistEntity(ObjectId managerId, String name, String surname, String nickname, String description, Boolean isActive){
-        this.managerId = managerId.toHexString();
-        this.name = name;
-        this.surname = surname;
-        this.nickname = nickname;
-        this.description = description;
-        this.isActive = isActive;
-    }
-
-    public ArtistEntity(ObjectId id, ObjectId managerId, String name, String surname, String nickname, String description, Boolean isActive) {
-        this.id = id.toHexString();
-        this.managerId = managerId.toHexString();
+    public ArtistEntity(ObjectId managerId, String name, String surname, String nickname, String description, Boolean isActive) {
+        this.managerId = managerId;
         this.name = name;
         this.surname = surname;
         this.nickname = nickname;
@@ -45,3 +35,14 @@ public class ArtistEntity {
         this.isActive = isActive;
     }
 }
+
+//    public ArtistEntity(ObjectId id, ObjectId managerId, String name, String surname, String nickname, String description, Boolean isActive) {
+//        this.id = id;
+//        this.managerId = managerId;
+//        this.name = name;
+//        this.surname = surname;
+//        this.nickname = nickname;
+//        this.description = description;
+//        this.isActive = isActive;
+//    }
+//}

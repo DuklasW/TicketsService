@@ -1,5 +1,6 @@
 package com.example.TicketsService.model;
 import com.example.TicketsService.model.enums.RoleEnum;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -41,6 +42,7 @@ public class UserEntity {
     @Field("refreshToken")
     private RefreshTokenEntity refreshToken;
 
+    @JsonIgnore
     public UserEntity(ObjectId id, String email, String password, List<String> roles) {
         this.id = id.toHexString();
         this.email = email;
@@ -48,12 +50,14 @@ public class UserEntity {
         this.roles = roles;
     }
 
+    @JsonIgnore
     public UserEntity(String email, String password, Set<RoleEnum> roles){
         this.email = email;
         this.password = password;
         this.roles = new ArrayList<>(roles.stream().map(RoleEnum::name).collect(Collectors.toList()));
     }
 
+    @JsonIgnore
     public UserEntity(String email, String password, Set<RoleEnum> roles, RefreshTokenEntity refreshToken){
         this.email = email;
         this.password = password;
@@ -61,10 +65,12 @@ public class UserEntity {
         this.refreshToken = refreshToken;
     }
 
+    @JsonIgnore
     public Set<RoleEnum> getRoles() {
         return new HashSet<>(roles.stream().map(RoleEnum::valueOf).collect(Collectors.toList()));
     }
 
+    @JsonIgnore
     public ObjectId getIdAsObjectId(){
         return new ObjectId(this.id);
     }

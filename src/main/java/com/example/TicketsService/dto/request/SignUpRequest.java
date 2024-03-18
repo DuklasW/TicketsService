@@ -1,5 +1,7 @@
 package com.example.TicketsService.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -12,13 +14,21 @@ import java.util.Set;
 @Setter
 public class SignUpRequest {
 
+    @Schema(example = "admin2@admin.com")
     @NotBlank
     @Email
-    private String email;
+    protected String email;
 
+    @Schema(example = "Passwordini123@")
     @NotBlank
     @Size(min=8, message = "Password too short!")
-    private String password;
+    protected String password;
 
-    private Set<String> roles;
+    @Schema( example = "[\"ADMIN\"]")
+    protected Set<String> roles;
+
+    @JsonIgnore
+    public boolean isValidRegon() {
+        throw new UnsupportedOperationException("Method isValidRegon is not supported for this user type");
+    }
 }

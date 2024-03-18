@@ -21,21 +21,24 @@ public class PurchaseEntity {
     private Date date;
     private String consumerId;
     private Integer tickets;
+    private String payPalId;
     private String statusPay;
 
-    public PurchaseEntity(ObjectId id, ObjectId eventId, Date date, ObjectId consumerId, Integer tickets, String statusPay) {
+    public PurchaseEntity(ObjectId id, ObjectId eventId, Date date, ObjectId consumerId, Integer tickets, String payPalId, String statusPay) {
         this.id = id.toHexString();
         this.eventId = eventId.toHexString();
         this.date = date;
         this.consumerId = consumerId.toHexString();
         this.tickets = tickets;
+        this.payPalId = payPalId;
         this.statusPay = statusPay;
     }
-    public PurchaseEntity(ObjectId eventId, Date date, ObjectId consumerId, Integer tickets, String statusPay) {
+    public PurchaseEntity(ObjectId eventId, Date date, ObjectId consumerId, Integer tickets, String payPalId, String statusPay) {
         this.eventId = eventId.toHexString();
         this.date = date;
         this.consumerId = consumerId.toHexString();
         this.tickets = tickets;
+        this.payPalId = payPalId;
         this.statusPay = statusPay;
     }
 

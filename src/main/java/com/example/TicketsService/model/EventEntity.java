@@ -1,5 +1,7 @@
 package com.example.TicketsService.model;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
@@ -9,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.util.Date;
 import java.util.List;
@@ -27,7 +31,9 @@ public class EventEntity {
     @NotNull
     private Double price;
     @NotNull
-    private Integer numberTickets;
+    private Integer ticketsNumber;
+    @NotNull
+    private Integer ticketsBought;
     @NotBlank
     private String location;
     @NotBlank
@@ -40,6 +46,7 @@ public class EventEntity {
     @NotBlank
     private String street;
     @NotBlank
+    @Field(targetType = FieldType.OBJECT_ID)
     private String createdBy;
     @NotBlank
     private String name;
@@ -48,37 +55,23 @@ public class EventEntity {
 
 
 
-    public EventEntity(Date date, List<String> artistId, Double price, Integer numberTickets, String location, String city, String postcode, String regon, String street, ObjectId createdBy, String name, String description) {
+    public EventEntity(Date date, List<String> artistId, Double price, Integer ticketsNumber, Integer ticketsBought, String location, String city, String postcode, String regon, String street, String createdBy, String name, String description) {
         this.date = date;
         this.artistName = artistId;
         this.price = price;
-        this.numberTickets = numberTickets;
+        this.ticketsNumber = ticketsNumber;
+        this.ticketsBought = ticketsBought;
         this.location = location;
         this.city = city;
         this.postcode = postcode;
         this.regon = regon;
         this.street = street;
-        this.createdBy = createdBy.toHexString();
+        this.createdBy = createdBy;
         this.name = name;
         this.description = description;
     }
 
-    public EventEntity(ObjectId id, Date date, List<String> artistName, Double price, Integer numberTickets, String location, String city, String postcode, String regon, String street, ObjectId createdBy, String name, String description) {
-        this.id = id.toHexString();
-        this.date = date;
-        this.artistName = artistName;
-        this.price = price;
-        this.numberTickets = numberTickets;
-        this.location = location;
-        this.city = city;
-        this.postcode = postcode;
-        this.regon = regon;
-        this.street = street;
-        this.createdBy = createdBy.toHexString();
-        this.name = name;
-        this.description = description;
-    }
-
+    @JsonIgnore
     public ObjectId getIdAsObjectId(){
         return new ObjectId(this.id);
     }

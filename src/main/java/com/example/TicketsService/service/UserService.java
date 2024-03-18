@@ -24,14 +24,12 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    //Optional ponieważ może nie zwrócić nic
     public Optional<UserEntity> getUserByUserId(ObjectId id) {
         return userRepository.findById(id);
     }
 
     public Optional<UserEntity> getUserByUserEmail(String email) { return userRepository.findByEmail(email); }
 
-    public List<UserEntity> getAllUsersByRoles(String role) { return  userRepository.findAllByRoles(role); }
 
     public boolean checkUserExistByEmail(String email) { return  userRepository.existsByEmail(email); }
 

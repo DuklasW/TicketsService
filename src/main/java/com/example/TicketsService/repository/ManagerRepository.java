@@ -12,4 +12,5 @@ import java.util.Optional;
 @Repository
 public interface ManagerRepository extends MongoRepository<ManagerEntity, ObjectId> {
     Optional<ManagerEntity> findByUserId(ObjectId userId);
+
 }

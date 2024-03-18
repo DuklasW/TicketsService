@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PurchaseRepository extends MongoRepository<PurchaseEntity, ObjectId> {
+
+    PurchaseEntity findByPayPalId(String paypalId);
 }

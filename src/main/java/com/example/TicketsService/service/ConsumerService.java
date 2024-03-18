@@ -24,7 +24,7 @@ public class ConsumerService {
         UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
         ConsumerEntity consumer = consumerRepository.findConsumerEntityByUserId(user.getIdAsObjectId());
         if(consumer == null){
-            return null;
+            throw new RuntimeException("Consumer entity not found!");
         }else {
             return consumer.getId();
         }

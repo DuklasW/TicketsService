@@ -1,22 +1,21 @@
 package com.example.TicketsService.controller;
 
 
-import com.example.TicketsService.dto.request.CreateArtistRequest;
-import com.example.TicketsService.dto.request.ListArtistByMangerIdRequest;
 import com.example.TicketsService.model.ArtistEntity;
 import com.example.TicketsService.service.ArtistService;
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.tags.Tag;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Optional;
 
+@Tag(name="Artist Controller", description = "Kontroler służący do zadządzania artystami")
 @RestController
 @RequestMapping("/api/artist")
 public class ArtistController {
@@ -24,21 +23,16 @@ public class ArtistController {
     @Autowired
     private ArtistService artistService;
 
-    @GetMapping("/bymanager/{managerId}")
-    public ResponseEntity<List<ArtistEntity>> getArtistByManagerId(@PathVariable ObjectId managerId) {
-        List<ArtistEntity> artists = artistService.getArtistByManagerId(managerId);
-            return new ResponseEntity<>(artists, HttpStatus.OK);
+    //TODO sprawdzić example przy przeniesieniu na serwer
+    @Operation(summary = "Wyświetla dane konkretnego artysty.",
+            description = "Publiczny endpoint, wyświetla informacje o konkretnym artystście na podstawie jego ID.",
+            parameters = {
+            @Parameter(name = "artistId", description = "Id artysty", required = true, example = "65b42dcc7e988b05de03b0a3")
+            })
+    @GetMapping("/{artistId}")
+    public ResponseEntity<Optional<ArtistEntity>> getArtistByArtistId(@PathVariable String artistId){
+        ObjectId id = new ObjectId(artistId);
+        Optional<ArtistEntity> artist = artistService.getArtistByArtistId(id);
+        return new ResponseEntity<>(artist, HttpStatus.OK);
     }
-
-    @PostMapping("/bymanager")
-    public ResponseEntity<List<ArtistEntity>> getArtistByManagerIdd(@Valid @RequestBody ListArtistByMangerIdRequest request){
-
-        ObjectId objectManagerId = new ObjectId(request.getManagerId());
-        List<ArtistEntity> artists = artistService.getArtistByManagerId(objectManagerId);
-        return new ResponseEntity<>(artists, HttpStatus.OK);
-    }
-
-
-
 }
-

@@ -1,15 +1,23 @@
 package com.example.TicketsService.controller;
 
+import com.example.TicketsService.advice.EventNotFoundException;
 import com.example.TicketsService.dto.request.CreateEventRequest;
 import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.model.EventEntity;
+import com.example.TicketsService.security.service.UserDetailsImpl;
 import com.example.TicketsService.service.EventService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,58 +25,45 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+@Tag(name="Event Controller", description = "Kontroler służący do zadządzania wydarzeniami")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@Validated
-@Valid
 @RequestMapping("/api/event")
 public class EventController {
 
     @Autowired
     EventService eventService;
 
-
-    @PostMapping("create")
+    @Operation(summary = "Dodaj wydarzenia", description = "Pozwala utworzyć jedno lub więcej nowych wydarzeń na podstawie przekazanych danych wejściowych")
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PostMapping("/create")
     public ResponseEntity<?> createEvents(@Valid @RequestBody CreateEventRequest request) {
-
-        if (!request.isValidRegon()){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Error, region not in enum list"));
-        }
-
-        if(request.getDates().isEmpty()){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new MessageResponse("Error, date is empty"));
-        }
-
-        List<Date> dates = request.getDates();
-        dates.stream().map(date -> {
-            EventEntity event = new EventEntity(
-                    date,
-                    request.getArtistName(),
-                    request.getPrice(),
-                    request.getNumberTickets(),
-                    request.getLocation(),
-                    request.getCity(),
-                    request.getPostcode(),
-                    request.getRegon(),
-                    request.getStreet(),
-                    request.getCreatedByByObjectId(),
-                    request.getName(),
-                    request.getDescription()
-            );
-            eventService.save(event);
-            return null;
-        }).collect(Collectors.toSet());
-
-
-        return ResponseEntity.ok(new MessageResponse("Added events successfully"));
+        return eventService.createEvents(request);
     }
 
+
+    @Operation(summary = "Usuń wydarzenie", description = "Pozwala usunąć wydarzenie o podanym id",parameters = {
+            @Parameter(name = "eventId", description = "Id wydarzenia", required = true, example = "65f3a110f4c72238e8e32579")
+    })
+    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @DeleteMapping("/delete/{eventId}")
+    public ResponseEntity<?> deleteEvent(@PathVariable String eventId) {
+        return eventService.deleteEvent(eventId);
+    }
+
+    @Operation(summary = "Pobierz wszystkie wydarzenia", description = "Pobiera wszystkie wydarzenia")
     @GetMapping("/all")
     public ResponseEntity<List<EventEntity>> getAllEvent(){
         List<EventEntity> events = eventService.getAllEvents();
         return new ResponseEntity<>(events, HttpStatus.OK);
+    }
+
+    @Operation(summary = "Pobierz wydarzenie o określonym identyfikatorze", description = "Pobiera wydarzenie o podanym id", parameters = {
+        @Parameter(name = "eventId", description = "Id wydarzenia", required = true, example = "65f3a110f4c72238e8e32579")
+    })
+    @GetMapping("/{eventId}")
+    public ResponseEntity<EventEntity> getEventById(@PathVariable String eventId) {
+            EventEntity event = eventService.getEventById(eventId);
+            return ResponseEntity.ok(event);
     }
 }
