@@ -1,21 +1,12 @@
 package com.example.TicketsService.controller;
 
 import com.example.TicketsService.dto.request.*;
-import com.example.TicketsService.dto.response.JwtResponse;
 import com.example.TicketsService.dto.response.MessageResponse;
-import com.example.TicketsService.dto.response.TokenRefreshResponse;
 import com.example.TicketsService.model.*;
-import com.example.TicketsService.model.enums.RoleEnum;
-import com.example.TicketsService.security.jwt.JwtUtils;
 import com.example.TicketsService.security.service.UserDetailsImpl;
 import com.example.TicketsService.security.service.RefreshTokenService;
 import com.example.TicketsService.service.AuthService;
-import com.example.TicketsService.service.ConsumerService;
-import com.example.TicketsService.service.ManagerService;
-import com.example.TicketsService.service.UserService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -26,22 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import com.example.TicketsService.exception.TokenRefreshException;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 @Tag(name="Auth Controller", description = "Kontroler służący do zadządzania procesem rejestracji oraz logowania")
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -121,7 +99,7 @@ public class AuthController {
     }
 
     @Operation(summary = "Wylogowanie",
-            description = "Endpoint służący do wylogowania użytkownika czyli usuwa refreshToken z bazy danych.")
+            description = "Endpoint służący do wylogowania aktualnie zalogowanego użytkownika czyli usuwa refreshToken z bazy danych.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK - Log out successful!"),
             @ApiResponse(responseCode = "401", description = "Error, you are not logged on, send current bererToken!")

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 import java.util.Date;
 
@@ -16,40 +18,23 @@ import java.util.Date;
 public class PurchaseEntity {
 
     @Id
+    @Field(targetType = FieldType.OBJECT_ID)
     private String id;
+    @Field(targetType = FieldType.OBJECT_ID)
     private String eventId;
     private Date date;
+    @Field(targetType = FieldType.OBJECT_ID)
     private String consumerId;
     private Integer tickets;
     private String payPalId;
     private String statusPay;
 
-    public PurchaseEntity(ObjectId id, ObjectId eventId, Date date, ObjectId consumerId, Integer tickets, String payPalId, String statusPay) {
-        this.id = id.toHexString();
-        this.eventId = eventId.toHexString();
+    public PurchaseEntity(String eventId, Date date, ObjectId consumerId, Integer tickets, String payPalId, String statusPay) {
+        this.eventId = eventId;
         this.date = date;
         this.consumerId = consumerId.toHexString();
         this.tickets = tickets;
         this.payPalId = payPalId;
         this.statusPay = statusPay;
-    }
-    public PurchaseEntity(ObjectId eventId, Date date, ObjectId consumerId, Integer tickets, String payPalId, String statusPay) {
-        this.eventId = eventId.toHexString();
-        this.date = date;
-        this.consumerId = consumerId.toHexString();
-        this.tickets = tickets;
-        this.payPalId = payPalId;
-        this.statusPay = statusPay;
-    }
-
-
-    public ObjectId getIdByObjectId(){
-        return new ObjectId(this.id);
-    }
-    public ObjectId getEventIdByObjectId(){
-        return new ObjectId(this.id);
-    }
-    public ObjectId getConsumerIdByObjectId(){
-        return new ObjectId(this.id);
     }
 }

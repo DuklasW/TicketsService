@@ -3,8 +3,6 @@ package com.example.TicketsService.service;
 import com.example.TicketsService.dto.request.*;
 import com.example.TicketsService.dto.response.JwtResponse;
 import com.example.TicketsService.dto.response.MessageResponse;
-import com.example.TicketsService.dto.response.TokenRefreshResponse;
-import com.example.TicketsService.exception.TokenRefreshException;
 import com.example.TicketsService.model.ConsumerEntity;
 import com.example.TicketsService.model.ManagerEntity;
 import com.example.TicketsService.model.RefreshTokenEntity;
@@ -148,7 +146,7 @@ public class AuthService {
     }
 
     private void createConsumerProfile(SignUpConsumerRequest signUpConsumerRequest, UserEntity userEntity) throws Exception {
-        ConsumerEntity consumerEntity = new ConsumerEntity(userEntity.getIdAsObjectId(), signUpConsumerRequest.getName(), signUpConsumerRequest.getSurname(), signUpConsumerRequest.getCity(), signUpConsumerRequest.getPhone(), signUpConsumerRequest.getPostcode(), signUpConsumerRequest.getRegon(), signUpConsumerRequest.getStreet());
+        ConsumerEntity consumerEntity = new ConsumerEntity(userEntity.getId(), signUpConsumerRequest.getName(), signUpConsumerRequest.getSurname(), signUpConsumerRequest.getCity(), signUpConsumerRequest.getPhone(), signUpConsumerRequest.getPostcode(), signUpConsumerRequest.getRegon(), signUpConsumerRequest.getStreet());
 
         if (consumerService.save(consumerEntity) == null) {
             userService.deleteByUserId(userEntity.getIdAsObjectId());
@@ -194,7 +192,7 @@ public class AuthService {
     }
 
     private void createManagerProfile(SignUpManagerRequest signUpManagerRequest, UserEntity userEntity) throws Exception {
-        ManagerEntity managerEntity = new ManagerEntity(userEntity.getIdAsObjectId(), signUpManagerRequest.getName(), signUpManagerRequest.getCheckVat(), signUpManagerRequest.getCity(), signUpManagerRequest.getCompanyName(), signUpManagerRequest.getCompanyStreet(), signUpManagerRequest.getNip(), signUpManagerRequest.getPhone(), signUpManagerRequest.getPostcode(), signUpManagerRequest.getRegon());
+        ManagerEntity managerEntity = new ManagerEntity(userEntity.getId(), signUpManagerRequest.getName(), signUpManagerRequest.getCheckVat(), signUpManagerRequest.getCity(), signUpManagerRequest.getCompanyName(), signUpManagerRequest.getCompanyStreet(), signUpManagerRequest.getNip(), signUpManagerRequest.getPhone(), signUpManagerRequest.getPostcode(), signUpManagerRequest.getRegon());
 
         if (managerService.save(managerEntity) == null) {
             userService.deleteByUserId(userEntity.getIdAsObjectId());

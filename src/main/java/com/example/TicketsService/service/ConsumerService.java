@@ -1,14 +1,15 @@
 package com.example.TicketsService.service;
 
 import com.example.TicketsService.model.ConsumerEntity;
+import com.example.TicketsService.model.PurchaseEntity;
 import com.example.TicketsService.model.UserEntity;
 import com.example.TicketsService.repository.ConsumerRepository;
+import com.example.TicketsService.repository.PurchaseRepository;
 import com.example.TicketsService.repository.UserRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.function.Consumer;
+import java.util.List;
 
 @Service
 public class ConsumerService {
@@ -17,6 +18,8 @@ public class ConsumerService {
     private ConsumerRepository consumerRepository;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
     public ConsumerEntity save(ConsumerEntity consumer) {return consumerRepository.save(consumer); }
 
@@ -28,8 +31,14 @@ public class ConsumerService {
         }else {
             return consumer.getId();
         }
-
-
     }
 
+    public List<PurchaseEntity> getTicketHistory(String userEmail) {
+        ObjectId consumerId = getConsumerIdByEmail(userEmail);
+        return purchaseRepository.findByConsumerId(consumerId);
+    }
+
+    public ConsumerEntity getConsumerByUserId(ObjectId userId) {
+        return consumerRepository.findConsumerEntityByUserId(userId);
+    }
 }

@@ -1,6 +1,5 @@
 package com.example.TicketsService.model;
 
-import com.example.TicketsService.model.enums.RegonPolandEnum;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -9,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 
 @NoArgsConstructor
@@ -20,7 +21,8 @@ public class ConsumerEntity {
     @Id
     private ObjectId id;
     @NotBlank
-    private ObjectId userId;
+    @Field(targetType = FieldType.OBJECT_ID)
+    private String userId;
     @NotBlank
     private String name;
     @NotBlank
@@ -41,7 +43,7 @@ public class ConsumerEntity {
     private String companyPostcode;
     private String companyStreet;
 
-    public ConsumerEntity(ObjectId userId, String name, String surname, String city, String phone, String postcode, String regon, String street) {
+    public ConsumerEntity(String userId, String name, String surname, String city, String phone, String postcode, String regon, String street) {
         this.userId = userId;
         this.name = name;
         this.surname = surname;

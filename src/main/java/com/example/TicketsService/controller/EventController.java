@@ -1,29 +1,19 @@
 package com.example.TicketsService.controller;
 
-import com.example.TicketsService.advice.EventNotFoundException;
+
 import com.example.TicketsService.dto.request.CreateEventRequest;
-import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.model.EventEntity;
-import com.example.TicketsService.security.service.UserDetailsImpl;
 import com.example.TicketsService.service.EventService;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.info.Info;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Tag(name="Event Controller", description = "Kontroler służący do zadządzania wydarzeniami")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -58,7 +48,7 @@ public class EventController {
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
-    @Operation(summary = "Pobierz wydarzenie o określonym identyfikatorze", description = "Pobiera wydarzenie o podanym id", parameters = {
+    @Operation(summary = "Pobierz wydarzenie o określonym id", description = "Pobiera wydarzenie o podanym id", parameters = {
         @Parameter(name = "eventId", description = "Id wydarzenia", required = true, example = "65f3a110f4c72238e8e32579")
     })
     @GetMapping("/{eventId}")

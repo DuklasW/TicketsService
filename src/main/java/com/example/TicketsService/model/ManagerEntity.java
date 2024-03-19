@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,7 +20,8 @@ public class ManagerEntity {
     @Id
     private String id;
     @NotBlank
-    private ObjectId userId;
+    @Field(targetType = FieldType.OBJECT_ID)
+    private String userId;
     @NotBlank
     private String name;
     @NotBlank
@@ -41,21 +44,8 @@ public class ManagerEntity {
     @NotBlank
     private String regon;
 
-    public ManagerEntity(ObjectId id, ObjectId userId, String name, Boolean checkVat, String city, String companyName, String companyStreet, String nip, String phone, String postcode, String regon) {
-        this.id = id.toHexString();
-        this.userId = userId;
-        this.name = name;
-        this.checkVat = checkVat;
-        this.city = city;
-        this.companyName = companyName;
-        this.companyStreet = companyStreet;
-        this.nip = nip;
-        this.phone = phone;
-        this.postcode = postcode;
-        this.regon = regon;
-    }
 
-    public ManagerEntity(ObjectId userId, String name, Boolean checkVat, String city, String companyName, String companyStreet, String nip, String phone, String postcode, String regon) {
+    public ManagerEntity(String userId, String name, Boolean checkVat, String city, String companyName, String companyStreet, String nip, String phone, String postcode, String regon) {
         this.userId = userId;
         this.name = name;
         this.checkVat = checkVat;

@@ -33,7 +33,6 @@ public class ManagerService {
     private UserService userService;
 
     public List<ManagerEntity> allManagers(){ return managerRepository.findAll();
-
     }
 
     public Optional<ManagerEntity> getManagerByUserId(ObjectId userId){ return managerRepository.findByUserId(userId); }
@@ -44,7 +43,7 @@ public class ManagerService {
         List<ManagerEntity> managerEntities = managerRepository.findAll();
         List<ManagerResponse> managerResponses = new ArrayList<>();
         for(ManagerEntity managerEntity : managerEntities){
-            managerResponses.add(new ManagerResponse(managerEntity.getId(), managerEntity.getUserId().toHexString(), managerEntity.getName(), managerEntity.getCheckVat(), managerEntity.getCity(), managerEntity.getCompanyName(), managerEntity.getCompanyStreet(), managerEntity.getNip(), managerEntity.getPhone(), managerEntity.getPostcode(), managerEntity.getRegon()));
+            managerResponses.add(new ManagerResponse(managerEntity.getId(), managerEntity.getUserId(), managerEntity.getName(), managerEntity.getCheckVat(), managerEntity.getCity(), managerEntity.getCompanyName(), managerEntity.getCompanyStreet(), managerEntity.getNip(), managerEntity.getPhone(), managerEntity.getPostcode(), managerEntity.getRegon()));
         }
         return managerResponses;
     }
@@ -56,7 +55,7 @@ public class ManagerService {
             ArtistResponse artistResponse = new ArtistResponse();
             BeanUtils.copyProperties(artistEntity, artistResponse);
             artistResponse.setId(artistEntity.getId().toHexString());
-            artistResponse.setManagerId(artistEntity.getManagerId().toHexString());
+            artistResponse.setManagerId(artistEntity.getManagerId());
             responseList.add(artistResponse);
         }
         return new ResponseEntity<>(responseList, HttpStatus.OK);
@@ -91,7 +90,7 @@ public class ManagerService {
 
     private ArtistEntity mapToArtistEntity(ManagerEntity managerEntity, CreateArtistRequest createArtistRequest) {
         return new ArtistEntity(
-                managerEntity.getIdByObjectID(),
+                managerEntity.getId(),
                 createArtistRequest.getName(),
                 createArtistRequest.getSurname(),
                 createArtistRequest.getNickname(),

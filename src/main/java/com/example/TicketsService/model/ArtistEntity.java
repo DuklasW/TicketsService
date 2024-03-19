@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +19,8 @@ public class ArtistEntity {
     @Id
     private ObjectId id;
     @NotBlank
-    private ObjectId managerId;
+    @Field(targetType = FieldType.OBJECT_ID)
+    private String managerId;
     @NotBlank
     private String name;
     private String surname;
@@ -26,7 +29,7 @@ public class ArtistEntity {
     private String description;
     private Boolean isActive;
 
-    public ArtistEntity(ObjectId managerId, String name, String surname, String nickname, String description, Boolean isActive) {
+    public ArtistEntity(String managerId, String name, String surname, String nickname, String description, Boolean isActive) {
         this.managerId = managerId;
         this.name = name;
         this.surname = surname;
@@ -35,14 +38,3 @@ public class ArtistEntity {
         this.isActive = isActive;
     }
 }
-
-//    public ArtistEntity(ObjectId id, ObjectId managerId, String name, String surname, String nickname, String description, Boolean isActive) {
-//        this.id = id;
-//        this.managerId = managerId;
-//        this.name = name;
-//        this.surname = surname;
-//        this.nickname = nickname;
-//        this.description = description;
-//        this.isActive = isActive;
-//    }
-//}

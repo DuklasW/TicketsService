@@ -20,6 +20,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.FieldType;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -27,6 +28,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @Document(collection = "users")
 public class UserEntity {
     @Id
+    @Field(targetType = FieldType.OBJECT_ID)
     private String id;
     @Indexed(unique = true)
     @NotBlank

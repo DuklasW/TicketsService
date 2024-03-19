@@ -3,7 +3,6 @@ package com.example.TicketsService.service;
 
 import com.example.TicketsService.model.UserEntity;
 import com.example.TicketsService.repository.UserRepository;
-import com.example.TicketsService.security.jwt.JwtUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +28,10 @@ public class UserService {
     }
 
     public Optional<UserEntity> getUserByUserEmail(String email) { return userRepository.findByEmail(email); }
+
+    public String getEmailByUserId(ObjectId id) {
+        return userRepository.getEmailById(id);
+    }
 
 
     public boolean checkUserExistByEmail(String email) { return  userRepository.existsByEmail(email); }
