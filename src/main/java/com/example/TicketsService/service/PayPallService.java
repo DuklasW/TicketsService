@@ -3,32 +3,30 @@ package com.example.TicketsService.service;
 import com.example.TicketsService.dto.response.PayPallAcceptPaymentReponse;
 import com.example.TicketsService.dto.response.PayPallMakePaymentResponse;
 import com.example.TicketsService.dto.response.PayPallTokenResponse;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
 import java.util.Base64;
-import java.util.Map;
 
 @Service
 public class PayPallService {
 
-    @Autowired
-    private WebClient webClient;
+    private final WebClient webClient;
 
     @Value("${TicketService.app.paypallId}")
     private String clientId;
 
     @Value("${TicketService.app.paypallSecret}")
     private String clientSecret;
+
+    @Autowired
+    public PayPallService(WebClient webClient) {
+        this.webClient = webClient;
+    }
 
     //Funkcja która zwraca access token z api PayPall
     public Mono<PayPallTokenResponse>  getAccessToken(){

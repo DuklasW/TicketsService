@@ -1,14 +1,12 @@
 package com.example.TicketsService.model;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -69,10 +67,5 @@ public class EventEntity {
         this.createdBy = createdBy;
         this.name = name;
         this.description = description;
-    }
-
-    @JsonIgnore
-    public ObjectId getIdAsObjectId(){
-        return new ObjectId(this.id);
     }
 }

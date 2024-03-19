@@ -5,16 +5,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class JsonService {
+public class OrderPreparationService {
 
 
-    public String createPaymentDataJson(EventEntity event, int quantity){
+    public String generateOrderPayPallData(EventEntity event, int quantity){
         ObjectMapper mapper = new ObjectMapper();
 
         mapper.configure(SerializationFeature.INDENT_OUTPUT, true);

@@ -25,14 +25,18 @@ public class RefreshTokenService {
         @Value("${TicketsService.app.jwtRefreshExpiratiobMS}")
         private Long refreshTokenExpirationMs;
 
-        @Autowired
-        private RefreshTokenRepository refreshTokenRepository;
+        private final RefreshTokenRepository refreshTokenRepository;
+
+        private final UserRepository userRepository;
+
+        private final JwtUtils jwtUtils;
 
         @Autowired
-        private UserRepository userRepository;
-
-        @Autowired
-        private JwtUtils jwtUtils;
+        public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository, JwtUtils jwtUtils) {
+            this.refreshTokenRepository = refreshTokenRepository;
+            this.userRepository = userRepository;
+            this.jwtUtils = jwtUtils;
+        }
 
 
         @Transactional
@@ -53,7 +57,7 @@ public class RefreshTokenService {
             return ResponseEntity.ok(new TokenRefreshResponse(token, newRefreshToken.getToken()));
         }
 
-    public Optional<RefreshTokenEntity> findByToken(String token){
+        public Optional<RefreshTokenEntity> findByToken(String token){
             return refreshTokenRepository.findByToken(token);
         }
 

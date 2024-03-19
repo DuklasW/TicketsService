@@ -19,11 +19,14 @@ import reactor.core.publisher.Mono;
 @RequestMapping("/api/purchase")
 public class PurchaseController {
 
-    @Autowired
-    private PurchaseService purchaseService;
+    private final PurchaseService purchaseService;
+    private final PayPallService payPallService;
 
     @Autowired
-    private PayPallService payPallService;
+    public PurchaseController(PurchaseService purchaseService, PayPallService payPallService) {
+        this.purchaseService = purchaseService;
+        this.payPallService = payPallService;
+    }
 
     @Operation(summary = "Kup bilet poprzez PayPall", description = "Pozwala kupić bilety na wybrane wydarzenie korzystając z płatności PayPall sandbox .Endpoint dostępny dla zalogowanych użytkowników, z rolą 'CONSUMER'")
     @PreAuthorize("hasRole('ROLE_CONSUMER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")

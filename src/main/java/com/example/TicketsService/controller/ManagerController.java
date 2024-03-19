@@ -6,30 +6,20 @@ import com.example.TicketsService.dto.response.ArtistResponse;
 import com.example.TicketsService.dto.response.ManagerResponse;
 import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.model.ArtistEntity;
-import com.example.TicketsService.model.ManagerEntity;
-import com.example.TicketsService.model.UserEntity;
 import com.example.TicketsService.security.service.UserDetailsImpl;
-import com.example.TicketsService.service.ArtistService;
 import com.example.TicketsService.service.ManagerService;
-import com.example.TicketsService.service.TokenService;
-import com.example.TicketsService.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.bson.types.ObjectId;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
 import java.security.Principal;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name="Manager Controller", description = "Kontroler służący do zadządzania managerami")
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -37,8 +27,12 @@ import java.util.Optional;
 @RequestMapping("/api/manager")
 public class ManagerController {
 
+    private final ManagerService managerService;
+
     @Autowired
-    private ManagerService managerService;
+    public ManagerController(ManagerService managerService) {
+        this.managerService = managerService;
+    }
 
     @Operation(summary = "Pobiera dane wszystkich managerów.",
             description = "Wyświetla listę encji managerów"
@@ -48,7 +42,6 @@ public class ManagerController {
         List<ManagerResponse> managerResponses = managerService.getAllManagerResponses();
         return new ResponseEntity<>(managerResponses, HttpStatus.OK);
     }
-
 
 
     @Operation(summary = "Dodaję artystę do managera.",
@@ -86,6 +79,6 @@ public class ManagerController {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ObjectId userId = userDetails.getId();
 
-        return managerService.getArtistsByManagerId(userId);
+        return managerService.getArtistsByUserId(userId);
     }
 }

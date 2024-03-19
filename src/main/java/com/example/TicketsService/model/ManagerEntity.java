@@ -17,8 +17,9 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 @Document(collection = "manager")
 public class ManagerEntity {
 
+    //TODO zmieniłem String na ObjectId, zakomentowałem funckje na dole moraz wManagerService.java managerEntityHasArtistWithNickname, zmieniłem na getId
     @Id
-    private String id;
+    private ObjectId id;
     @NotBlank
     @Field(targetType = FieldType.OBJECT_ID)
     private String userId;
@@ -58,8 +59,7 @@ public class ManagerEntity {
         this.regon = regon;
     }
 
-    public ObjectId getIdByObjectID(){
-        return new ObjectId(this.id);
+    public String getIdByString() {
+        return this.id.toHexString();
     }
-
 }

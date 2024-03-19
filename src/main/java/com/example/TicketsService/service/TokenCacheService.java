@@ -10,11 +10,15 @@ import reactor.core.publisher.Mono;
 public class TokenCacheService {
     private final static String TOKEN_CACHE_NAME = "bererTokenPayPall";
 
-    @Autowired
-    private PayPallService payPallService;
+    private final PayPallService payPallService;
+
+    private final CacheManager cacheManager;
 
     @Autowired
-    private CacheManager cacheManager;
+    public TokenCacheService(PayPallService payPallService, CacheManager cacheManager) {
+        this.payPallService = payPallService;
+        this.cacheManager = cacheManager;
+    }
 
     public String getToken(){
         Cache cache = cacheManager.getCache(TOKEN_CACHE_NAME);
@@ -33,7 +37,9 @@ public class TokenCacheService {
                         .flatMap(response -> Mono.just(response.getAccess_token()))
                                 .block();
 
-        cache.put(TOKEN_CACHE_NAME, token);
+        if (cache != null) {
+            cache.put(TOKEN_CACHE_NAME, token);
+        }
         return token;
 }
 }

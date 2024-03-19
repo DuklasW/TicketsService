@@ -11,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -21,8 +20,12 @@ import java.util.Optional;
 @RequestMapping("/api/test/user")
 public class UserController {
 
+    private final UserService userService;
+
     @Autowired
-    private UserService userService;
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @Operation(summary = "Wyświetl użytkowników", description = "Pozwala wyświetlić listę użytkowników, tylko dla administracji")
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
@@ -35,7 +38,7 @@ public class UserController {
             @Parameter(name = "userId", description = "Id użytkownika", required = true, example = "65b2d492a162224d2a3e957d")
     })
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
-    @GetMapping("/{id}")
+    @GetMapping("/{userId}")
     public  ResponseEntity<Optional<UserEntity>> getSingleUser(@PathVariable String userId){
         return new ResponseEntity<>(userService.getUserByUserId(new ObjectId(userId)), HttpStatus.OK);
     }

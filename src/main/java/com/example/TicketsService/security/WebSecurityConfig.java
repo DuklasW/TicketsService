@@ -26,11 +26,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
 public class WebSecurityConfig {
 
-    @Autowired
-    UserDetailsServiceImpl userDetailsService;
+    final UserDetailsServiceImpl userDetailsService;
+
+    private final AuthEntryPointJwt unauthorizedHandler;
 
     @Autowired
-    private AuthEntryPointJwt unauthorizedHandler;
+    public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
+        this.userDetailsService = userDetailsService;
+        this.unauthorizedHandler = unauthorizedHandler;
+    }
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter(){

@@ -7,10 +7,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.security.SecuritySchemes;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
 
 @OpenAPIDefinition(info =@Info(title = "TicketService", version = "1.0",description = "Backend aplikacji służącej do sprzedaży biletów"),
 	security ={@SecurityRequirement(name = "bearerToken"), @SecurityRequirement(name = "basicAuth")}

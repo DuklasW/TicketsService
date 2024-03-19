@@ -21,8 +21,13 @@ import java.util.List;
 @RequestMapping("/api/event")
 public class EventController {
 
-    @Autowired
+    final
     EventService eventService;
+
+    @Autowired
+    public EventController(EventService eventService) {
+        this.eventService = eventService;
+    }
 
     @Operation(summary = "Dodaj wydarzenia", description = "Pozwala utworzyć jedno lub więcej nowych wydarzeń na podstawie przekazanych danych wejściowych")
     @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")

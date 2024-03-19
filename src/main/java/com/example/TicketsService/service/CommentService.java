@@ -6,14 +6,21 @@ import com.example.TicketsService.repository.CommentRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.example.TicketsService.Factory.CommentFactory;
 
 import java.util.List;
 
 @Service
 public class CommentService {
 
+    private final CommentRepository commentRepository;
+    private final CommentFactory commentFactory;
+
     @Autowired
-    private CommentRepository commentRepository;
+    CommentService(CommentRepository commentRepository, CommentFactory commentFactory) {
+        this.commentRepository = commentRepository;
+        this.commentFactory = commentFactory;
+    }
 
     public CommentEntity addComment(CommentRequest commentRequest, ObjectId consumerId) {
         CommentEntity comment = createComment(commentRequest, consumerId);
@@ -21,8 +28,9 @@ public class CommentService {
     }
 
     public CommentEntity createComment(CommentRequest commentRequest, ObjectId consumerId) {
-        return new CommentEntity(commentRequest.getArtistId(), consumerId.toHexString(), commentRequest.getStars(), commentRequest.getDescription());
+        return commentFactory.createComment(consumerId.toHexString(), commentRequest);
     }
+
 
     public List<CommentEntity> getArtistComments(String artistId) {
         return commentRepository.findByArtistId(new ObjectId(artistId));

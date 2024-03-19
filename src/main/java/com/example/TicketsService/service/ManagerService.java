@@ -1,5 +1,8 @@
 package com.example.TicketsService.service;
 
+import com.example.TicketsService.Factory.ArtistFactory;
+import com.example.TicketsService.Mapper.ArtistMapper;
+import com.example.TicketsService.Mapper.ManagerMapper;
 import com.example.TicketsService.dto.request.CreateArtistRequest;
 import com.example.TicketsService.dto.response.ArtistResponse;
 import com.example.TicketsService.dto.response.ManagerResponse;
@@ -7,32 +10,36 @@ import com.example.TicketsService.model.ArtistEntity;
 import com.example.TicketsService.model.ManagerEntity;
 import com.example.TicketsService.model.UserEntity;
 import com.example.TicketsService.repository.ManagerRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
 import org.bson.types.ObjectId;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ManagerService {
 
-    @Autowired
-    private ArtistService artistService;
+    private final ArtistService artistService;
+    private final ManagerRepository managerRepository;
+    private final UserService userService;
+    private final ManagerMapper managerMapper;
+    private final ArtistFactory artistFactory;
+    private final ArtistMapper artistMapper;
 
     @Autowired
-    private ManagerRepository managerRepository;
+    public ManagerService(ArtistService artistService, ManagerRepository managerRepository, UserService userService, ManagerMapper managerMapper, ArtistFactory artistFactory, ArtistMapper artistMapper){
+        this.artistService = artistService;
+        this.managerRepository = managerRepository;
+        this.userService = userService;
+        this.managerMapper = managerMapper;
+        this.artistFactory = artistFactory;
+        this.artistMapper = artistMapper;
+    }
 
-    @Autowired
-    private UserService userService;
-
-    public List<ManagerEntity> allManagers(){ return managerRepository.findAll();
+    public List<ManagerEntity> getAllManagers(){ return managerRepository.findAll();
     }
 
     public Optional<ManagerEntity> getManagerByUserId(ObjectId userId){ return managerRepository.findByUserId(userId); }
@@ -40,24 +47,14 @@ public class ManagerService {
     public ManagerEntity save(ManagerEntity manager){ return managerRepository.save(manager); }
 
     public List<ManagerResponse> getAllManagerResponses() {
-        List<ManagerEntity> managerEntities = managerRepository.findAll();
-        List<ManagerResponse> managerResponses = new ArrayList<>();
-        for(ManagerEntity managerEntity : managerEntities){
-            managerResponses.add(new ManagerResponse(managerEntity.getId(), managerEntity.getUserId(), managerEntity.getName(), managerEntity.getCheckVat(), managerEntity.getCity(), managerEntity.getCompanyName(), managerEntity.getCompanyStreet(), managerEntity.getNip(), managerEntity.getPhone(), managerEntity.getPostcode(), managerEntity.getRegon()));
-        }
-        return managerResponses;
+        List<ManagerEntity> managerEntities = getAllManagers();
+        return managerMapper.toResponses(managerEntities);
     }
 
     public ResponseEntity<List<ArtistResponse>> getArtistsByManagerId(ObjectId managerId) {
         List<ArtistEntity> artists = artistService.getArtistByManagerId(managerId);
-        List<ArtistResponse> responseList = new ArrayList<>();
-        for(ArtistEntity artistEntity : artists){
-            ArtistResponse artistResponse = new ArtistResponse();
-            BeanUtils.copyProperties(artistEntity, artistResponse);
-            artistResponse.setId(artistEntity.getId().toHexString());
-            artistResponse.setManagerId(artistEntity.getManagerId());
-            responseList.add(artistResponse);
-        }
+        List<ArtistResponse> responseList = artistMapper.mapToResponses(artists);
+
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 
@@ -70,12 +67,12 @@ public class ManagerService {
             throw new IllegalArgumentException("Manager already has an artist with the same nickname");
         }
 
-        ArtistEntity artistEntity = mapToArtistEntity(managerEntity, createArtistRequest);
+        ArtistEntity artistEntity = artistFactory.createArtist(createArtistRequest, managerEntity);
         return artistService.save(artistEntity);
     }
 
     private boolean managerEntityHasArtistWithNickname(ManagerEntity managerEntity, String nickname) {
-        return artistService.existsByManagerIdAndNickname(managerEntity.getIdByObjectID(), nickname);
+        return artistService.existsByManagerIdAndNickname(managerEntity.getId(), nickname);
     }
 
     private UserEntity getUserByManagerEmail(String userEmail) {
@@ -88,14 +85,8 @@ public class ManagerService {
                 .orElseThrow(() -> new IllegalArgumentException("Error: manager not found for user"));
     }
 
-    private ArtistEntity mapToArtistEntity(ManagerEntity managerEntity, CreateArtistRequest createArtistRequest) {
-        return new ArtistEntity(
-                managerEntity.getId(),
-                createArtistRequest.getName(),
-                createArtistRequest.getSurname(),
-                createArtistRequest.getNickname(),
-                createArtistRequest.getDescription(),
-                true
-        );
+    public ResponseEntity<List<ArtistResponse>> getArtistsByUserId(ObjectId userId) {
+        ObjectId managerId = getManagerByUserId(userId).orElseThrow().getId();
+        return getArtistsByManagerId(managerId);
     }
 }

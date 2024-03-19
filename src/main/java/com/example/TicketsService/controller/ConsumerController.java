@@ -27,14 +27,16 @@ import java.util.Optional;
 @RequestMapping("/api/consumer")
 public class ConsumerController {
 
-    @Autowired
-    private ConsumerService consumerService;
+    private final ConsumerService consumerService;
+    private final UserService userService;
+    private final CommentService commentService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private CommentService commentService;
+    public ConsumerController(ConsumerService consumerService, UserService userService, CommentService commentService) {
+        this.consumerService = consumerService;
+        this.userService = userService;
+        this.commentService = commentService;
+    }
 
     @Operation(summary = "Historia biletów użytkownika", description="Wyświetla historię biletów użytkownika. Tylko dla użytkowników z rolą ROLE_CONSUMER")
     @PreAuthorize("hasRole('ROLE_CONSUMER')")

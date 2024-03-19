@@ -1,9 +1,5 @@
 package com.example.TicketsService.model.enums;
 
-import lombok.Getter;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,9 +37,9 @@ public enum RegonPolandEnum {
         return null;
     }
 
-    public static List<String> getAvailableRegon(){
-        return Stream.of(RegonPolandEnum.values()).map(RegonPolandEnum::getDisplayRegon).collect(Collectors.toList());
-    }
+//    public static List<String> getAvailableRegon(){
+//        return Stream.of(RegonPolandEnum.values()).map(RegonPolandEnum::getDisplayRegon).collect(Collectors.toList());
+//    }
 
     public String getDisplayRegon(){
         return displayRegon;

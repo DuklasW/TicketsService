@@ -1,10 +1,12 @@
 package com.example.TicketsService.service;
 
+import com.example.TicketsService.Mapper.EventMapper;
 import com.example.TicketsService.dto.request.CreateEventRequest;
 import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.model.EventEntity;
 import com.example.TicketsService.repository.EventRepository;
 import com.example.TicketsService.security.service.UserDetailsImpl;
+import com.example.TicketsService.validate.EventValidator;
 import jakarta.validation.ValidationException;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,23 +17,29 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class EventService {
 
+    private final EventRepository eventRepository;
+    private final EventValidator eventValidator;
+    private final EventMapper eventMapper;
+
     @Autowired
-    private EventRepository eventRepository;
+    public EventService(EventRepository eventRepository, EventValidator eventValidator, EventMapper eventMapper){
+        this.eventRepository = eventRepository;
+        this.eventValidator = eventValidator;
+        this.eventMapper = eventMapper;
+    }
 
     @Transactional
     public ResponseEntity<?> createEvents(CreateEventRequest request) {
         try {
-            validateData(request);
-            List<EventEntity> events = mapToEvents(request);
+            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            eventValidator.validate(request);
+            List<EventEntity> events = eventMapper.mapToEvents(request, userDetails);
             saveAll(events);
             return ResponseEntity.ok(new MessageResponse("Created event successfully"));
         }catch(ValidationException e){
@@ -42,37 +50,6 @@ public class EventService {
         }
     }
 
-    private void validateData(CreateEventRequest request) throws ValidationException {
-        if (!request.isValidRegon()) {
-            throw new ValidationException("Error, region not in enum list");
-        }
-        if (request.getDates().isEmpty()) {
-            throw new ValidationException("Error, date is empty");
-        }
-    }
-
-    private List<EventEntity> mapToEvents(CreateEventRequest request) {
-        return request.getDates().stream().map(date -> mapToEvent(date, request)).collect(Collectors.toList());
-    }
-
-    private EventEntity mapToEvent(Date date, CreateEventRequest request) {
-        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        return new EventEntity(
-                date,
-                request.getArtistName(),
-                request.getPrice(),
-                request.getTicketsNumber(),
-                0,
-                request.getLocation(),
-                request.getCity(),
-                request.getPostcode(),
-                request.getRegon(),
-                request.getStreet(),
-                userDetails.getId().toHexString(),
-                request.getName(),
-                request.getDescription()
-        );
-    }
 
 
     private void saveAll(List<EventEntity> events) throws DataAccessException {

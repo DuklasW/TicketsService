@@ -26,11 +26,16 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    @Autowired
+    final
     RefreshTokenService refreshTokenService;
+    final
+    AuthService authService;
 
     @Autowired
-    AuthService authService;
+    public AuthController(RefreshTokenService refreshTokenService, AuthService authService) {
+        this.refreshTokenService = refreshTokenService;
+        this.authService = authService;
+    }
 
     @Operation(summary = "Logowanie",
             description = "Publiczny endpoint, pozwala się zalogować na wybrane konto. " +

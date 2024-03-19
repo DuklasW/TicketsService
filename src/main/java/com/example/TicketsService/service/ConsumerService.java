@@ -14,12 +14,16 @@ import java.util.List;
 @Service
 public class ConsumerService {
 
+    private final ConsumerRepository consumerRepository;
+    private final UserRepository userRepository;
+    private final PurchaseRepository purchaseRepository;
+
     @Autowired
-    private ConsumerRepository consumerRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private PurchaseRepository purchaseRepository;
+    public ConsumerService(ConsumerRepository consumerRepository, UserRepository userRepository, PurchaseRepository purchaseRepository) {
+        this.consumerRepository = consumerRepository;
+        this.userRepository = userRepository;
+        this.purchaseRepository = purchaseRepository;
+    }
 
     public ConsumerEntity save(ConsumerEntity consumer) {return consumerRepository.save(consumer); }
 

@@ -1,5 +1,6 @@
 package com.example.TicketsService.service;
 
+import com.example.TicketsService.Factory.PurchaseFactory;
 import com.example.TicketsService.dto.request.PurchaseAcceptRequest;
 import com.example.TicketsService.dto.request.PurchaseTicketRequest;
 import com.example.TicketsService.dto.response.Link;
@@ -7,9 +8,9 @@ import com.example.TicketsService.dto.response.PayPallMakePaymentResponse;
 import com.example.TicketsService.model.PurchaseEntity;
 import com.example.TicketsService.repository.PurchaseRepository;
 import com.example.TicketsService.security.service.UserDetailsImpl;
+import com.example.TicketsService.validate.PayPallValidator;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import com.example.TicketsService.model.EventEntity;
 import org.springframework.http.ResponseEntity;
@@ -17,35 +18,31 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
-
 import java.util.Date;
 
 @Service
 public class PurchaseService {
 
-    @Autowired
-    private TokenService tokenService;
+    private final ConsumerService consumerService;
+    private final EventService eventService;
+    private final OrderPreparationService orderPreparationService;
+    private final PayPallService payPallService;
+    private final TokenCacheService tokenCacheService;
+    private final PurchaseRepository purchaseRepository;
+    private final PayPallValidator payPallValidator;
+    private final PurchaseFactory purchaseFactory;
 
     @Autowired
-    private ConsumerService consumerService;
-
-    @Autowired
-    private EventService eventService;
-
-    @Autowired
-    private JsonService jsonService;
-
-    @Autowired
-    private PayPallService payPallService;
-
-    @Autowired
-    private TokenCacheService tokenCacheService;
-
-    @Value("${TicketsService.app.delayedPaymentTimeMS}")
-    private Long delayedPaymentTimeMS;
-
-    @Autowired
-    private PurchaseRepository purchaseRepository;
+    public PurchaseService(ConsumerService consumerService, EventService eventService, OrderPreparationService orderPreparationService, PayPallService payPallService, TokenCacheService tokenCacheService, PurchaseRepository purchaseRepository, PayPallValidator payPallValidator, PurchaseFactory purchaseFactory) {
+        this.consumerService = consumerService;
+        this.eventService = eventService;
+        this.orderPreparationService = orderPreparationService;
+        this.payPallService = payPallService;
+        this.tokenCacheService = tokenCacheService;
+        this.purchaseRepository = purchaseRepository;
+        this.payPallValidator = payPallValidator;
+        this.purchaseFactory = purchaseFactory;
+    }
 
     private void save(PurchaseEntity purchase){
         purchaseRepository.save(purchase);
@@ -60,8 +57,7 @@ public class PurchaseService {
 
         EventEntity event = getEvent(request.getEventId());
         Date currentDate = new Date();
-
-        validateEventForPurchase(event, currentDate, request.getTickets());
+        payPallValidator.validate3Args(event, currentDate, request.getTickets());
 
         try{
             event.setTicketsBought(event.getTicketsBought() + request.getTickets());
@@ -71,14 +67,14 @@ public class PurchaseService {
         }
 
         try{
-            jsonBodyPayment = jsonService.createPaymentDataJson(event, request.getTickets());
+            jsonBodyPayment = orderPreparationService.generateOrderPayPallData(event, request.getTickets());
         }catch (Exception e){
             return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Server error, try again soon."));
         }
 
         String bererToken = tokenCacheService.getToken();
-        validatePaymentToken(bererToken);
+        payPallValidator.validate(bererToken);
 
 
             return payPallService.makePayment(bererToken, jsonBodyPayment)
@@ -93,43 +89,16 @@ public class PurchaseService {
     private ObjectId getConsumerId(String userEmail) {
         return consumerService.getConsumerIdByEmail(userEmail);
     }
-    private void validatePaymentToken(String bererToken) {
-        if (bererToken.isEmpty()) {
-            throw new RuntimeException("PayPall server error, try again soon.");
-        }
-    }
-
-    private void validateEventForPurchase(EventEntity event, Date currentDate, int ticketsNumber) {
-        Date eventDate = event.getDate();
-        if (!checkDateIsBeforeEvent(eventDate, currentDate)) {
-            throw new RuntimeException("It's too late, buy ticket to next event!");
-        }
-        if (event.getTicketsBought() + ticketsNumber > event.getTicketsNumber()) {
-            throw new RuntimeException("We ran out of tickets, good luck next time");
-        }
-    }
 
     private Mono<ResponseEntity<String>> createEntityAndSaveToDatabase(PurchaseTicketRequest request, PayPallMakePaymentResponse response, Date currentDate, ObjectId consumerId) {
         try {
-            PurchaseEntity purchaseEntity = new PurchaseEntity(
-                    request.getEventId(),
-                    currentDate,
-                    consumerId,
-                    request.getTickets(),
-                    response.getId(),
-                    "Created");
+            PurchaseEntity purchaseEntity = purchaseFactory.createPurchase(request, currentDate, consumerId, response);
 
             save(purchaseEntity);
             return Mono.just(ResponseEntity.ok("Payment created, id: " + response.getId() + ", pay with PayPal account: " + getApprovalLink(response) +"\nTestowe konto do logowania: \nsb-u4l64329043544@personal.example.com\nPaC}X-D6"));
         } catch (Exception e) {
             return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error during save to database: " + e.getMessage()));
         }
-
-    }
-
-    private boolean checkDateIsBeforeEvent(Date eventDate, Date currentDate) {
-        Date eventDelayedDate = new Date(eventDate.getTime() + delayedPaymentTimeMS);
-        return eventDelayedDate.compareTo(currentDate) > 0;
 
     }
 
@@ -165,7 +134,7 @@ public class PurchaseService {
         try {
             PurchaseEntity purchaseEntity = purchaseRepository.findByPayPalId(payPalId);
             purchaseEntity.setStatusPay("Paid");
-            purchaseRepository.save(purchaseEntity);
+            save(purchaseEntity);
         }catch (Exception e){
             throw new RuntimeException("Error while update status payPallId");
         }

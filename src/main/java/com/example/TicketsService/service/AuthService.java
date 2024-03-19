@@ -1,5 +1,6 @@
 package com.example.TicketsService.service;
 
+import com.example.TicketsService.Factory.ProfileFactory;
 import com.example.TicketsService.dto.request.*;
 import com.example.TicketsService.dto.response.JwtResponse;
 import com.example.TicketsService.dto.response.MessageResponse;
@@ -11,6 +12,7 @@ import com.example.TicketsService.model.enums.RoleEnum;
 import com.example.TicketsService.security.jwt.JwtUtils;
 import com.example.TicketsService.security.service.RefreshTokenService;
 import com.example.TicketsService.security.service.UserDetailsImpl;
+import com.example.TicketsService.validate.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,27 +33,36 @@ import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
-
+    private final AuthenticationManager authenticationManager;
+    private final  RefreshTokenService refreshTokenService;
+    private final  UserService userService;
+    private final  ManagerService managerService;
+    private final  ConsumerService consumerService;
+    private final  PasswordEncoder encoder;
+    private final  JwtUtils jwtUtils;
+    private final  UserValidator userValidator;
+    private final ProfileFactory profileFactory;
     @Autowired
-    AuthenticationManager authenticationManager;
+    public AuthService(AuthenticationManager authenticationManager,
+                       UserService userService,
+                       PasswordEncoder encoder,
+                       RefreshTokenService refreshTokenService,
+                       JwtUtils jwtUtils,
+                       ManagerService managerService,
+                       ConsumerService consumerService,
+                       UserValidator userValidator,
+                       ProfileFactory profileFactory){
+        this.authenticationManager = authenticationManager;
+        this.userService = userService;
+        this.encoder = encoder;
+        this.refreshTokenService = refreshTokenService;
+        this.jwtUtils = jwtUtils;
+        this.managerService = managerService;
+        this.consumerService = consumerService;
+        this.userValidator = userValidator;
+        this.profileFactory = profileFactory;
+    }
 
-    @Autowired
-    RefreshTokenService refreshTokenService;
-
-    @Autowired
-    UserService userService;
-
-    @Autowired
-    ManagerService managerService;
-
-    @Autowired
-    ConsumerService consumerService;
-
-    @Autowired
-    PasswordEncoder encoder;
-
-    @Autowired
-    JwtUtils jwtUtils;
 
     public ResponseEntity<?> authenticateUser(LoginRequest loginRequest) {
         try {
@@ -128,7 +139,7 @@ public class AuthService {
 
     public ResponseEntity<?> registerConsumer(SignUpConsumerRequest signUpConsumerRequest) {
         try {
-            validateUser(signUpConsumerRequest);
+            userValidator.validate(signUpConsumerRequest);
 
             //create new user account for consumer
             UserEntity userEntity = createUser(signUpConsumerRequest, RoleEnum.ROLE_CONSUMER);
@@ -146,8 +157,7 @@ public class AuthService {
     }
 
     private void createConsumerProfile(SignUpConsumerRequest signUpConsumerRequest, UserEntity userEntity) throws Exception {
-        ConsumerEntity consumerEntity = new ConsumerEntity(userEntity.getId(), signUpConsumerRequest.getName(), signUpConsumerRequest.getSurname(), signUpConsumerRequest.getCity(), signUpConsumerRequest.getPhone(), signUpConsumerRequest.getPostcode(), signUpConsumerRequest.getRegon(), signUpConsumerRequest.getStreet());
-
+        ConsumerEntity consumerEntity = profileFactory.createConsumer(userEntity.getId(), signUpConsumerRequest);
         if (consumerService.save(consumerEntity) == null) {
             userService.deleteByUserId(userEntity.getIdAsObjectId());
             throw new Exception("Error while saving consumer profile");
@@ -156,7 +166,7 @@ public class AuthService {
 
     public ResponseEntity<?> registerManager(SignUpManagerRequest signUpManagerRequest) {
         try {
-            validateUser(signUpManagerRequest);
+            userValidator.validate(signUpManagerRequest);
 
             //create new user account for manager
             UserEntity userEntity = createUser(signUpManagerRequest, RoleEnum.ROLE_MANAGER);
@@ -182,17 +192,9 @@ public class AuthService {
         return userEntity;
     }
 
-    private void validateUser(SignUpRequest signUpRequest) throws Exception {
-        if (userService.checkUserExistByEmail(signUpRequest.getEmail())) {
-            throw new Exception("Error: Email is already taken");
-        }
-        if (!signUpRequest.isValidRegon()) {
-            throw new Exception("Error,, regon not in enum list");
-        }
-    }
 
     private void createManagerProfile(SignUpManagerRequest signUpManagerRequest, UserEntity userEntity) throws Exception {
-        ManagerEntity managerEntity = new ManagerEntity(userEntity.getId(), signUpManagerRequest.getName(), signUpManagerRequest.getCheckVat(), signUpManagerRequest.getCity(), signUpManagerRequest.getCompanyName(), signUpManagerRequest.getCompanyStreet(), signUpManagerRequest.getNip(), signUpManagerRequest.getPhone(), signUpManagerRequest.getPostcode(), signUpManagerRequest.getRegon());
+        ManagerEntity managerEntity = profileFactory.createManager(userEntity.getId(), signUpManagerRequest);
 
         if (managerService.save(managerEntity) == null) {
             userService.deleteByUserId(userEntity.getIdAsObjectId());

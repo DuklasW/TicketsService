@@ -23,14 +23,18 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/artist")
 public class ArtistController {
 
-    @Autowired
-    private ArtistService artistService;
+    private final ArtistService artistService;
+
+    private final CommentMapper commentMapper;
+
+    private final CommentService commentService;
 
     @Autowired
-    private CommentMapper commentMapper;
-
-    @Autowired
-    private CommentService commentService;
+    public ArtistController(ArtistService artistService, CommentMapper commentMapper, CommentService commentService) {
+        this.artistService = artistService;
+        this.commentMapper = commentMapper;
+        this.commentService = commentService;
+    }
 
     //TODO sprawdzić example przy przeniesieniu na serwer
     @Operation(summary = "Wyświetla dane konkretnego artysty.",

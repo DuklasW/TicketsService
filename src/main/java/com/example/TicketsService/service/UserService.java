@@ -13,8 +13,12 @@ import java.util.Optional;
 @Service
 public class UserService {
 
+    private final UserRepository userRepository;
+
     @Autowired
-    private UserRepository userRepository;
+    public UserService(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
 
     public List<UserEntity> getAllUsers(){ return userRepository.findAll(); }
@@ -28,11 +32,6 @@ public class UserService {
     }
 
     public Optional<UserEntity> getUserByUserEmail(String email) { return userRepository.findByEmail(email); }
-
-    public String getEmailByUserId(ObjectId id) {
-        return userRepository.getEmailById(id);
-    }
-
 
     public boolean checkUserExistByEmail(String email) { return  userRepository.existsByEmail(email); }
 

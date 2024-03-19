@@ -1,15 +1,11 @@
 package com.example.TicketsService.service;
 
-import com.example.TicketsService.dto.request.CreateArtistRequest;
 import com.example.TicketsService.model.ArtistEntity;
-import com.example.TicketsService.model.ManagerEntity;
-import com.example.TicketsService.model.UserEntity;
 import com.example.TicketsService.repository.ArtistRepository;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -17,8 +13,12 @@ import java.util.Optional;
 public class ArtistService{
 
 
+    private final ArtistRepository artistRepository;
+
     @Autowired
-    private ArtistRepository artistRepository;
+    public ArtistService(ArtistRepository artistRepository) {
+        this.artistRepository = artistRepository;
+    }
 
     public List<ArtistEntity> getArtistByManagerId(ObjectId managerId){
         return artistRepository.findByManagerId(managerId);
