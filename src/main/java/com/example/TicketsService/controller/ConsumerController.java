@@ -1,6 +1,5 @@
 package com.example.TicketsService.controller;
 
-import com.example.TicketsService.Mapper.CommentMapper;
 import com.example.TicketsService.dto.request.CommentRequest;
 import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.model.*;
@@ -37,9 +36,6 @@ public class ConsumerController {
     @Autowired
     private CommentService commentService;
 
-    @Autowired
-    private CommentMapper commentMapper;
-
     @Operation(summary = "Historia biletów użytkownika", description="Wyświetla historię biletów użytkownika. Tylko dla użytkowników z rolą ROLE_CONSUMER")
     @PreAuthorize("hasRole('ROLE_CONSUMER')")
     @PostMapping("/ticketHistory")
@@ -51,8 +47,8 @@ public class ConsumerController {
             return ResponseEntity.ok(purchases);
     }
 
-    @Operation(summary = "Pobierz wszystkie bilety użytkownika o określonym id", description="Wyświetla listę biletów użytkownika po podaniu jego id. Tylko dla administracji."
-            @parameters = {
+    @Operation(summary = "Pobierz wszystkie bilety użytkownika o określonym id", description="Wyświetla listę biletów użytkownika po podaniu jego id. Tylko dla administracji.",
+            parameters = {
             @Parameter(name = "userId", description = "Identyfikator użytkownika", required = true, example = "65b2d492a162224d2a3e957e")
     })
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
@@ -94,7 +90,7 @@ public class ConsumerController {
         ObjectId consumerId = consumer.getId();
 
         try {
-            CommentEntity comment = commentService.deleteComment(new ObjectId(commentId), consumerId);
+            commentService.deleteComment(new ObjectId(commentId), consumerId);
             return ResponseEntity.ok(new MessageResponse("Comment deleted successfully!"));
         }catch (RuntimeException e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new MessageResponse(e.getMessage()));
