@@ -18,7 +18,7 @@ public class ArtistMapper {
         return responses;
     }
 
-    private ArtistResponse mapToResponse(ArtistEntity artistEntity) {
+    public ArtistResponse mapToResponse(ArtistEntity artistEntity) {
         ArtistResponse artistResponse = new ArtistResponse();
 
         artistResponse.setId(artistEntity.getId().toHexString());

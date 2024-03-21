@@ -2,6 +2,7 @@ package com.example.TicketsService.service;
 
 import com.example.TicketsService.Mapper.EventMapper;
 import com.example.TicketsService.dto.request.CreateEventRequest;
+import com.example.TicketsService.dto.response.EventResponse;
 import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.model.EventEntity;
 import com.example.TicketsService.repository.EventRepository;
@@ -59,10 +60,6 @@ public class EventService {
         eventRepository.save(event);
     }
 
-    public List<EventEntity> getAllEvents() {
-        return eventRepository.findAll();
-    }
-
     public Optional<EventEntity> getEventEntityByEventId(ObjectId id) {
         return eventRepository.findById(id);
     }
@@ -86,9 +83,14 @@ public class EventService {
         return eventRepository.existsByCreatedByAndId(eventId, userId.toHexString());
     }
 
-    public EventEntity getEventById(String eventId) {
-        return eventRepository.findById(new ObjectId(eventId))
+    public EventResponse getEventById(String eventId) {
+        EventEntity eventEntity = eventRepository.findById(new ObjectId(eventId))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found with id: " + eventId));
+        return eventMapper.toResponse(eventEntity);
+    }
 
+    public List<EventResponse> getAllEventsResponse() {
+        List<EventEntity> events = eventRepository.findAll();
+        return eventMapper.toListResponse(events);
     }
 }

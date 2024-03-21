@@ -2,6 +2,7 @@ package com.example.TicketsService.controller;
 
 
 import com.example.TicketsService.Mapper.CommentMapper;
+import com.example.TicketsService.dto.response.ArtistResponse;
 import com.example.TicketsService.dto.response.CommentResponse;
 import com.example.TicketsService.model.ArtistEntity;
 import com.example.TicketsService.service.ArtistService;
@@ -43,9 +44,9 @@ public class ArtistController {
             @Parameter(name = "artistId", description = "Id artysty", required = true, example = "65b42dcc7e988b05de03b0a3")
             })
     @GetMapping("/{artistId}")
-    public ResponseEntity<Optional<ArtistEntity>> getArtistByArtistId(@PathVariable String artistId){
+    public ResponseEntity<ArtistResponse> getArtistByArtistId(@PathVariable String artistId){
         ObjectId id = new ObjectId(artistId);
-        Optional<ArtistEntity> artist = artistService.getArtistByArtistId(id);
+        ArtistResponse artist = artistService.getArtistByArtistId(id);
         return new ResponseEntity<>(artist, HttpStatus.OK);
     }
 

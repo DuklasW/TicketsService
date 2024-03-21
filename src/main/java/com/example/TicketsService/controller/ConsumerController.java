@@ -2,6 +2,8 @@ package com.example.TicketsService.controller;
 
 import com.example.TicketsService.dto.request.CommentRequest;
 import com.example.TicketsService.dto.response.MessageResponse;
+import com.example.TicketsService.dto.response.PurchaseReponse;
+import com.example.TicketsService.dto.response.UserResponse;
 import com.example.TicketsService.model.*;
 import com.example.TicketsService.security.service.UserDetailsImpl;
 import com.example.TicketsService.service.CommentService;
@@ -45,7 +47,7 @@ public class ConsumerController {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             String userEmail = userDetails.getEmail();
 
-            List<PurchaseEntity> purchases = consumerService.getTicketHistory(userEmail);
+            List<PurchaseReponse> purchases = consumerService.getTicketHistory(userEmail);
             return ResponseEntity.ok(purchases);
     }
 
@@ -55,9 +57,9 @@ public class ConsumerController {
     })
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     @GetMapping("/ticketHistory/{userId}")
-    public ResponseEntity<List<PurchaseEntity>> getTicketById(@PathVariable String userId){
-        Optional<UserEntity> user = userService.getUserByUserId(new ObjectId(userId));
-        List<PurchaseEntity> purchases = consumerService.getTicketHistory(user.get().getEmail());
+    public ResponseEntity<List<PurchaseReponse>> getTicketById(@PathVariable String userId){
+        UserResponse user = userService.getUserByUserId(new ObjectId(userId));
+        List<PurchaseReponse> purchases = consumerService.getTicketHistory(user.getEmail());
         return ResponseEntity.ok(purchases);
     }
 

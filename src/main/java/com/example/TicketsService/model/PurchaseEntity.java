@@ -17,9 +17,9 @@ import java.util.Date;
 @Document(collection = "purchases")
 public class PurchaseEntity {
 
+    //TODO ZMIANA ZE String na ObjectId
     @Id
-    @Field(targetType = FieldType.OBJECT_ID)
-    private String id;
+    private ObjectId id;
     @Field(targetType = FieldType.OBJECT_ID)
     private String eventId;
     private Date date;

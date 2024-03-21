@@ -1,6 +1,8 @@
 package com.example.TicketsService.service;
 
 
+import com.example.TicketsService.Mapper.UserMapper;
+import com.example.TicketsService.dto.response.UserResponse;
 import com.example.TicketsService.model.UserEntity;
 import com.example.TicketsService.repository.UserRepository;
 import org.bson.types.ObjectId;
@@ -14,21 +16,29 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
         this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
 
-    public List<UserEntity> getAllUsers(){ return userRepository.findAll(); }
+    public List<UserResponse> getAllUsers(){
+        List<UserEntity> users = userRepository.findAll();
+        return userMapper.toResponses(users);
+    }
 
     public UserEntity save(UserEntity user){
         return userRepository.save(user);
     }
 
-    public Optional<UserEntity> getUserByUserId(ObjectId id) {
-        return userRepository.findById(id);
+    public UserResponse getUserByUserId(ObjectId id) {
+        UserEntity userEntity = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return userMapper.toResponse(userEntity);
     }
 
     public Optional<UserEntity> getUserByUserEmail(String email) { return userRepository.findByEmail(email); }

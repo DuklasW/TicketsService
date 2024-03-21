@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -20,9 +21,9 @@ import java.util.List;
 @Data
 @Document(collection = "events")
 public class EventEntity {
-
+//TODO ZMIENIAM STRING na OBJECTID
     @Id
-    private String id;
+    private ObjectId id;
     @NotBlank
     private Date date;
     private List<String> artistName;

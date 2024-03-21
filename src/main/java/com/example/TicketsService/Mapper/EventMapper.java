@@ -1,36 +1,58 @@
 package com.example.TicketsService.Mapper;
 
+import com.example.TicketsService.Factory.EventFactory;
 import com.example.TicketsService.dto.request.CreateEventRequest;
+import com.example.TicketsService.dto.response.EventResponse;
 import com.example.TicketsService.model.EventEntity;
 import com.example.TicketsService.security.service.UserDetailsImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import java.lang.reflect.Field;
 import org.springframework.stereotype.Component;
-import java.util.Date;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
 public class EventMapper {
-    public EventEntity mapToEvent(Date date, CreateEventRequest request, UserDetailsImpl userDetails) {
-        return new EventEntity(
-                date,
-                request.getArtistName(),
-                request.getPrice(),
-                request.getTicketsNumber(),
-                0,
-                request.getLocation(),
-                request.getCity(),
-                request.getPostcode(),
-                request.getRegon(),
-                request.getStreet(),
-                userDetails.getId().toHexString(),
-                request.getName(),
-                request.getDescription()
-        );
+
+    private final EventFactory eventFactory;
+
+    @Autowired
+    public EventMapper(EventFactory eventFactory){
+        this.eventFactory = eventFactory;
     }
 
     public List<EventEntity> mapToEvents(CreateEventRequest request, UserDetailsImpl userDetails) {
         return request.getDates().stream()
-                .map(date -> mapToEvent(date, request, userDetails))
+                .map(date -> eventFactory.createEvent(date, request, userDetails))
+                .collect(Collectors.toList());
+    }
+
+    public EventResponse toResponse(EventEntity eventEntity){
+        EventResponse eventResponse = new EventResponse();
+
+        eventResponse.setId(eventEntity.getId().toString());
+        eventResponse.setDate(eventEntity.getDate());
+        eventResponse.setArtistName(eventEntity.getArtistName());
+        eventResponse.setPrice(eventEntity.getPrice());
+        eventResponse.setTicketsNumber(eventEntity.getTicketsNumber());
+        eventResponse.setTicketsBought(eventEntity.getTicketsBought());
+        eventResponse.setLocation(eventEntity.getLocation());
+        eventResponse.setCity(eventEntity.getCity());
+        eventResponse.setPostcode(eventEntity.getPostcode());
+        eventResponse.setRegon(eventEntity.getRegon());
+        eventResponse.setStreet(eventEntity.getStreet());
+        eventResponse.setCreatedBy(eventEntity.getCreatedBy());
+        eventResponse.setName(eventEntity.getName());
+        eventResponse.setDescription(eventEntity.getDescription());
+
+        return eventResponse;
+    }
+
+    public List<EventResponse> toListResponse(List<EventEntity> eventEntities) {
+        return eventEntities.stream()
+                .map(this::toResponse)
                 .collect(Collectors.toList());
     }
 }

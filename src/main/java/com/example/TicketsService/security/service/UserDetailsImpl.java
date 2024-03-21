@@ -38,7 +38,7 @@ public class UserDetailsImpl implements UserDetails {
                 .collect(Collectors.toSet());
 
         return new UserDetailsImpl(
-                userEntity.getIdAsObjectId(),
+                userEntity.getId(),
                 userEntity.getEmail(),
                 userEntity.getPassword(),
                 authorities

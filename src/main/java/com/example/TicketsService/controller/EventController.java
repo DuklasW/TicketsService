@@ -2,6 +2,7 @@ package com.example.TicketsService.controller;
 
 
 import com.example.TicketsService.dto.request.CreateEventRequest;
+import com.example.TicketsService.dto.response.EventResponse;
 import com.example.TicketsService.model.EventEntity;
 import com.example.TicketsService.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,8 +49,8 @@ public class EventController {
 
     @Operation(summary = "Pobierz wszystkie wydarzenia", description = "Pobiera wszystkie wydarzenia")
     @GetMapping("/all")
-    public ResponseEntity<List<EventEntity>> getAllEvent(){
-        List<EventEntity> events = eventService.getAllEvents();
+    public ResponseEntity<List<EventResponse>> getAllEvent(){
+        List<EventResponse> events = eventService.getAllEventsResponse();
         return new ResponseEntity<>(events, HttpStatus.OK);
     }
 
@@ -57,8 +58,8 @@ public class EventController {
         @Parameter(name = "eventId", description = "Id wydarzenia", required = true, example = "65f3a110f4c72238e8e32579")
     })
     @GetMapping("/{eventId}")
-    public ResponseEntity<EventEntity> getEventById(@PathVariable String eventId) {
-            EventEntity event = eventService.getEventById(eventId);
+    public ResponseEntity<EventResponse> getEventById(@PathVariable String eventId) {
+            EventResponse event = eventService.getEventById(eventId);
             return ResponseEntity.ok(event);
     }
 }

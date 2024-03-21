@@ -81,7 +81,7 @@ public class ManagerService {
     }
 
     private ManagerEntity getManagerByUser(UserEntity userEntity) {
-        return getManagerByUserId(userEntity.getIdAsObjectId())
+        return getManagerByUserId(userEntity.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Error: manager not found for user"));
     }
 

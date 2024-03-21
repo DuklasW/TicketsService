@@ -24,9 +24,9 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 @Data
 @Document(collection = "users")
 public class UserEntity {
+    //TODO ZMIENIAM Z STRING na OBJECTID
     @Id
-    @Field(targetType = FieldType.OBJECT_ID)
-    private String id;
+    private ObjectId id;
     @Indexed(unique = true)
     @NotBlank
     @Email
@@ -43,7 +43,7 @@ public class UserEntity {
 
     @JsonIgnore
     public UserEntity(ObjectId id, String email, String password, List<String> roles) {
-        this.id = id.toHexString();
+        this.id = id;
         this.email = email;
         this.password = password;
         this.roles = roles;
@@ -70,7 +70,7 @@ public class UserEntity {
     }
 
     @JsonIgnore
-    public ObjectId getIdAsObjectId(){
-        return new ObjectId(this.id);
+    public String getIdAsString(){
+        return this.id.toHexString();
     }
 }

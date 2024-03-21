@@ -157,9 +157,9 @@ public class AuthService {
     }
 
     private void createConsumerProfile(SignUpConsumerRequest signUpConsumerRequest, UserEntity userEntity) throws Exception {
-        ConsumerEntity consumerEntity = profileFactory.createConsumer(userEntity.getId(), signUpConsumerRequest);
+        ConsumerEntity consumerEntity = profileFactory.createConsumer(userEntity.getIdAsString(), signUpConsumerRequest);
         if (consumerService.save(consumerEntity) == null) {
-            userService.deleteByUserId(userEntity.getIdAsObjectId());
+            userService.deleteByUserId(userEntity.getId());
             throw new Exception("Error while saving consumer profile");
         }
     }
@@ -194,10 +194,10 @@ public class AuthService {
 
 
     private void createManagerProfile(SignUpManagerRequest signUpManagerRequest, UserEntity userEntity) throws Exception {
-        ManagerEntity managerEntity = profileFactory.createManager(userEntity.getId(), signUpManagerRequest);
+        ManagerEntity managerEntity = profileFactory.createManager(userEntity.getIdAsString(), signUpManagerRequest);
 
         if (managerService.save(managerEntity) == null) {
-            userService.deleteByUserId(userEntity.getIdAsObjectId());
+            userService.deleteByUserId(userEntity.getId());
             throw new Exception("Error while saving consumer profile");
         }
     }

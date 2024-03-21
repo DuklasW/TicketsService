@@ -51,8 +51,8 @@ public class RefreshTokenService {
 
             String token = jwtUtils.generateTokenFromEmail(user.getEmail());
 
-            deleteByUserId(user.getIdAsObjectId());
-            RefreshTokenEntity newRefreshToken = createRefreshToken(user.getIdAsObjectId());
+            deleteByUserId(user.getId());
+            RefreshTokenEntity newRefreshToken = createRefreshToken(user.getId());
 
             return ResponseEntity.ok(new TokenRefreshResponse(token, newRefreshToken.getToken()));
         }

@@ -1,5 +1,7 @@
 package com.example.TicketsService.service;
 
+import com.example.TicketsService.Mapper.ArtistMapper;
+import com.example.TicketsService.dto.response.ArtistResponse;
 import com.example.TicketsService.model.ArtistEntity;
 import com.example.TicketsService.repository.ArtistRepository;
 import org.bson.types.ObjectId;
@@ -14,17 +16,23 @@ public class ArtistService{
 
 
     private final ArtistRepository artistRepository;
+    private final ArtistMapper artistMapper;
 
     @Autowired
-    public ArtistService(ArtistRepository artistRepository) {
+    public ArtistService(ArtistRepository artistRepository, ArtistMapper artistMapper) {
         this.artistRepository = artistRepository;
+        this.artistMapper = artistMapper;
     }
 
     public List<ArtistEntity> getArtistByManagerId(ObjectId managerId){
         return artistRepository.findByManagerId(managerId);
     }
 
-    public Optional<ArtistEntity> getArtistByArtistId(ObjectId artistId){return artistRepository.findById(artistId); }
+    public ArtistResponse getArtistByArtistId(ObjectId artistId){
+        ArtistEntity artist = artistRepository.findById(artistId)
+                .orElseThrow(() -> new IllegalArgumentException("Artist not found for id: " + artistId.toHexString()));
+        return artistMapper.mapToResponse(artist);
+    }
 
     @Transactional
     public ArtistEntity save(ArtistEntity arist){ return artistRepository.save(arist); }
