@@ -91,6 +91,6 @@ public class EventService {
 
     public List<EventResponse> getAllEventsResponse() {
         List<EventEntity> events = eventRepository.findAll();
-        return eventMapper.toListResponse(events);
+        return eventMapper.toResponses(events);
     }
 }

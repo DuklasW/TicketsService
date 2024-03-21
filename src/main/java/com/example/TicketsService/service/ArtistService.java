@@ -31,7 +31,7 @@ public class ArtistService{
     public ArtistResponse getArtistByArtistId(ObjectId artistId){
         ArtistEntity artist = artistRepository.findById(artistId)
                 .orElseThrow(() -> new IllegalArgumentException("Artist not found for id: " + artistId.toHexString()));
-        return artistMapper.mapToResponse(artist);
+        return artistMapper.toResponse(artist);
     }
 
     @Transactional

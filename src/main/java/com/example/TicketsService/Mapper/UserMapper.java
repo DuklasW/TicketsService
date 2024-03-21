@@ -1,34 +1,25 @@
 package com.example.TicketsService.Mapper;
+import com.example.TicketsService.Mapper.common.AbstractMapper;
 
-import com.example.TicketsService.dto.response.PurchaseReponse;
 import com.example.TicketsService.dto.response.UserResponse;
-import com.example.TicketsService.model.PurchaseEntity;
 import com.example.TicketsService.model.UserEntity;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class UserMapper {
-    public UserResponse toResponse(UserEntity userEntity) {
+public class UserMapper extends AbstractMapper<UserEntity, UserResponse>{
+    @Override
+    public UserResponse toResponse(UserEntity entity) {
+        if(entity == null)
+            return null;
         UserResponse userResponse = new UserResponse();
 
-        userResponse.setId(userEntity.getId().toString());
-        userResponse.setEmail(userEntity.getEmail());
-        userResponse.setPassword(userEntity.getPassword());
-        userResponse.setRoles(List.of(userEntity.getRoles().toString()));
+        userResponse.setId(entity.getId().toString());
+        userResponse.setEmail(entity.getEmail());
+        userResponse.setPassword(entity.getPassword());
+        userResponse.setRoles(List.of(entity.getRoles().toString()));
 
         return userResponse;
-    }
-
-
-    public List<UserResponse> toResponses(List<UserEntity> users) {
-        List<UserResponse> userResponses = new ArrayList<>();
-
-        for(UserEntity user : users) {
-            userResponses.add(toResponse(user));
-        }
-        return userResponses;
     }
 }

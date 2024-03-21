@@ -4,7 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class AbstracMapper<E, R> implements Mapper<E, R> {
+public abstract class AbstractMapper<E, R> implements Mapper<E, R> {
 
     @Override
     public List<R> toResponses(List<E> entities) {

@@ -1,24 +1,15 @@
 package com.example.TicketsService.Mapper;
 
+import com.example.TicketsService.Mapper.common.AbstractMapper;
 import com.example.TicketsService.dto.response.ArtistResponse;
 import com.example.TicketsService.model.ArtistEntity;
 import org.springframework.stereotype.Component;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
-public class ArtistMapper {
+public class ArtistMapper extends AbstractMapper<ArtistEntity, ArtistResponse> {
 
-    public List<ArtistResponse> mapToResponses(List<ArtistEntity> entities) {
-        List<ArtistResponse> responses = new ArrayList<>();
-
-        for(ArtistEntity artistEntity : entities){
-            responses.add(mapToResponse(artistEntity));
-        }
-        return responses;
-    }
-
-    public ArtistResponse mapToResponse(ArtistEntity artistEntity) {
+    @Override
+    public ArtistResponse toResponse(ArtistEntity artistEntity) {
         ArtistResponse artistResponse = new ArtistResponse();
 
         artistResponse.setId(artistEntity.getId().toHexString());

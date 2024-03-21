@@ -1,6 +1,7 @@
 package com.example.TicketsService.Mapper;
 
 import com.example.TicketsService.Factory.EventFactory;
+import com.example.TicketsService.Mapper.common.AbstractMapper;
 import com.example.TicketsService.dto.request.CreateEventRequest;
 import com.example.TicketsService.dto.response.EventResponse;
 import com.example.TicketsService.model.EventEntity;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class EventMapper {
+public class EventMapper extends AbstractMapper<EventEntity, EventResponse> {
 
     private final EventFactory eventFactory;
 
@@ -29,6 +30,7 @@ public class EventMapper {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public EventResponse toResponse(EventEntity eventEntity){
         EventResponse eventResponse = new EventResponse();
 
@@ -48,11 +50,5 @@ public class EventMapper {
         eventResponse.setDescription(eventEntity.getDescription());
 
         return eventResponse;
-    }
-
-    public List<EventResponse> toListResponse(List<EventEntity> eventEntities) {
-        return eventEntities.stream()
-                .map(this::toResponse)
-                .collect(Collectors.toList());
     }
 }
