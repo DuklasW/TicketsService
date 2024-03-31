@@ -27,5 +27,4 @@ public class RefreshTokenEntity {
 
     @NotBlank
     private Instant expiryDate;
-
 }

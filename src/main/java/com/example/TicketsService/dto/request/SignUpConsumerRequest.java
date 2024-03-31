@@ -45,8 +45,9 @@ public class SignUpConsumerRequest extends SignUpRequest{
     private String street;
 
     @JsonIgnore
+    @Override
     public boolean isValidRegon(){
-        return RegonPolandEnum.formDisplayRegon(regon) != null;
+        return RegonPolandEnum.formDisplayRegon(this.regon) != null;
     }
 
     @JsonIgnore

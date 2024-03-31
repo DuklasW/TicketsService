@@ -32,7 +32,11 @@ public class CommentService {
     }
 
 
-    public List<CommentEntity> getArtistComments(String artistId) {
+    public List<CommentEntity> getArtistComments(String artistId) throws Exception {
+        if (!ObjectId.isValid(artistId)) {
+            throw new Exception("Niepoprawny format artistId.");
+        }
+
         return commentRepository.findByArtistId(new ObjectId(artistId));
     }
 

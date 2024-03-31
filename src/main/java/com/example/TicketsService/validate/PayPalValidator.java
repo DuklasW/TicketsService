@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.Date;
 
 @Component
-public class PayPallValidator implements Validator {
+public class PayPalValidator implements Validator {
     @Value("${TicketsService.app.delayedPaymentTimeMS}")
     private Long delayedPaymentTimeMS;
     @Override

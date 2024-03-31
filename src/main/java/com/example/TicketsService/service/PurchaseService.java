@@ -8,7 +8,7 @@ import com.example.TicketsService.dto.response.PayPallMakePaymentResponse;
 import com.example.TicketsService.model.PurchaseEntity;
 import com.example.TicketsService.repository.PurchaseRepository;
 import com.example.TicketsService.security.service.UserDetailsImpl;
-import com.example.TicketsService.validate.PayPallValidator;
+import com.example.TicketsService.validate.PayPalValidator;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,18 +29,18 @@ public class PurchaseService {
     private final PayPallService payPallService;
     private final TokenCacheService tokenCacheService;
     private final PurchaseRepository purchaseRepository;
-    private final PayPallValidator payPallValidator;
+    private final PayPalValidator payPalValidator;
     private final PurchaseFactory purchaseFactory;
 
     @Autowired
-    public PurchaseService(ConsumerService consumerService, EventService eventService, OrderPreparationService orderPreparationService, PayPallService payPallService, TokenCacheService tokenCacheService, PurchaseRepository purchaseRepository, PayPallValidator payPallValidator, PurchaseFactory purchaseFactory) {
+    public PurchaseService(ConsumerService consumerService, EventService eventService, OrderPreparationService orderPreparationService, PayPallService payPallService, TokenCacheService tokenCacheService, PurchaseRepository purchaseRepository, PayPalValidator payPalValidator, PurchaseFactory purchaseFactory) {
         this.consumerService = consumerService;
         this.eventService = eventService;
         this.orderPreparationService = orderPreparationService;
         this.payPallService = payPallService;
         this.tokenCacheService = tokenCacheService;
         this.purchaseRepository = purchaseRepository;
-        this.payPallValidator = payPallValidator;
+        this.payPalValidator = payPalValidator;
         this.purchaseFactory = purchaseFactory;
     }
 
@@ -57,13 +57,13 @@ public class PurchaseService {
 
         EventEntity event = getEvent(request.getEventId());
         Date currentDate = new Date();
-        payPallValidator.validate3Args(event, currentDate, request.getTickets());
+        payPalValidator.validate3Args(event, currentDate, request.getTickets());
 
         try{
             event.setTicketsBought(event.getTicketsBought() + request.getTickets());
             eventService.save(event);
         }catch (Exception e){
-            return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error while blocking ticket quantity for 15 minutes"));
+            return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server error while blocking ticket quantity for 15 minutes: " + e.getMessage()));
         }
 
         try{
@@ -74,7 +74,7 @@ public class PurchaseService {
         }
 
         String bererToken = tokenCacheService.getToken();
-        payPallValidator.validate(bererToken);
+        payPalValidator.validate(bererToken);
 
 
             return payPallService.makePayment(bererToken, jsonBodyPayment)
@@ -82,11 +82,11 @@ public class PurchaseService {
                     .onErrorResume(error -> Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Payment failed: " + error.getMessage())))
                     .defaultIfEmpty(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error with payment!"));
     }
-    private EventEntity getEvent(String eventId) {
+    public EventEntity getEvent(String eventId) {
         return eventService.getEventEntityByEventId(new ObjectId(eventId))
                 .orElseThrow(() -> new RuntimeException("Brak wydarzenia o podanym id!"));
     }
-    private ObjectId getConsumerId(String userEmail) {
+    public ObjectId getConsumerId(String userEmail) {
         return consumerService.getConsumerIdByEmail(userEmail);
     }
 

@@ -17,14 +17,17 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class RefreshTokenService {
 
-        @Value("${TicketsService.app.jwtRefreshExpiratiobMS}")
+        @Value("${TicketsService.app.jwtRefreshExpiratiobMS:1000}")
         private Long refreshTokenExpirationMs;
+        public void setRefreshTokenExpirationMs(Long refreshTokenExpirationMs) {
+            this.refreshTokenExpirationMs = refreshTokenExpirationMs;
+        }
 
+    private final TokenProvider tokenProvider;
         private final RefreshTokenRepository refreshTokenRepository;
 
         private final UserRepository userRepository;
@@ -32,30 +35,28 @@ public class RefreshTokenService {
         private final JwtUtils jwtUtils;
 
         @Autowired
-        public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository, JwtUtils jwtUtils) {
+        public RefreshTokenService(RefreshTokenRepository refreshTokenRepository, UserRepository userRepository, JwtUtils jwtUtils, TokenProvider tokenProvider){
             this.refreshTokenRepository = refreshTokenRepository;
             this.userRepository = userRepository;
             this.jwtUtils = jwtUtils;
+            this.tokenProvider =tokenProvider;
         }
 
 
         @Transactional
-        public ResponseEntity<?> refreshToken(TokenRefreshRequest refreshRequest){
-            String requestRefreshToken = refreshRequest.getRefreshToken();
+        public ResponseEntity<?> refreshToken(TokenRefreshRequest refreshRequest) {
+                String requestRefreshToken = refreshRequest.getRefreshToken();
+                RefreshTokenEntity refreshToken = findByToken(requestRefreshToken)
+                        .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database"));
+                verifyExpiration(refreshToken);
+                UserEntity user = refreshToken.getUserEntity();
 
-            RefreshTokenEntity refreshToken = findByToken(requestRefreshToken)
-                    .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token is not in database"));
+                String token = jwtUtils.generateTokenFromEmail(user.getEmail());
 
-            verifyExpiration(refreshToken);
-            UserEntity user = refreshToken.getUserEntity();
-
-            String token = jwtUtils.generateTokenFromEmail(user.getEmail());
-
-            deleteByUserId(user.getId());
-            RefreshTokenEntity newRefreshToken = createRefreshToken(user.getId());
-
-            return ResponseEntity.ok(new TokenRefreshResponse(token, newRefreshToken.getToken()));
-        }
+                deleteTokenByUserId(user.getId());
+                RefreshTokenEntity newRefreshToken = createRefreshToken(user.getId());
+                return ResponseEntity.ok(new TokenRefreshResponse(token, newRefreshToken.getToken()));
+            }
 
         public Optional<RefreshTokenEntity> findByToken(String token){
             return refreshTokenRepository.findByToken(token);
@@ -67,7 +68,7 @@ public class RefreshTokenService {
 
             refreshToken.setUserEntity(userRepository.findById(userId).get());
             refreshToken.setExpiryDate(Instant.now().plusMillis(refreshTokenExpirationMs));
-            refreshToken.setToken(UUID.randomUUID().toString());
+            refreshToken.setToken(tokenProvider.generateToken());
 
             //token po wygaśnięciu zostaje usunięty z bazy danych poprzez trigger w mongoDB
             //TODO oraz raz na godzinę sprawdzamy czy to się wykonuje poprawnie
@@ -85,7 +86,7 @@ public class RefreshTokenService {
         }
 
         @Transactional
-        public int deleteByUserId(ObjectId userId){
+        public int deleteTokenByUserId(ObjectId userId){
             return refreshTokenRepository.deleteByUserEntity(userRepository.findById(userId).get());
         }
 }

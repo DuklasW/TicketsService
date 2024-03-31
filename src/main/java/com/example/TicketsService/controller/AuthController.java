@@ -76,7 +76,7 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "Error: Email is already taken.")
     })
     @PostMapping("/signup-consumer")
-    public ResponseEntity<?> registerConsumer(@Valid @RequestBody SignUpConsumerRequest signUpConsumerRequest){
+    public ResponseEntity<MessageResponse> registerConsumer(@Valid @RequestBody SignUpConsumerRequest signUpConsumerRequest){
         return authService.registerConsumer(signUpConsumerRequest);
     }
 
@@ -114,7 +114,7 @@ public class AuthController {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             ObjectId userId = userDetails.getId();
-            refreshTokenService.deleteByUserId(userId);
+            refreshTokenService.deleteTokenByUserId(userId);
             return ResponseEntity.ok(new MessageResponse("Log out successful!"));
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new MessageResponse("Error, you are not logged on, send current bererToken!"));

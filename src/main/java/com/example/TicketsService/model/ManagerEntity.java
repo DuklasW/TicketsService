@@ -1,5 +1,6 @@
 package com.example.TicketsService.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -59,7 +60,8 @@ public class ManagerEntity {
         this.regon = regon;
     }
 
+    @JsonIgnore
     public String getIdByString() {
-        return this.id.toHexString();
+        return id.toHexString();
     }
 }

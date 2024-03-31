@@ -52,8 +52,6 @@ public class EventEntity {
     @NotBlank
     private String description;
 
-
-
     public EventEntity(Date date, List<String> artistId, Double price, Integer ticketsNumber, Integer ticketsBought, String location, String city, String postcode, String regon, String street, String createdBy, String name, String description) {
         this.date = date;
         this.artistName = artistId;

@@ -27,7 +27,7 @@ public class UserController {
     }
 
     @Operation(summary = "Wyświetl użytkowników", description = "Pozwala wyświetlić listę użytkowników, tylko dla administracji")
-    //@PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<List<UserResponse>> getAllUsers(){
         return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
@@ -36,7 +36,7 @@ public class UserController {
     parameters = {
             @Parameter(name = "userId", description = "Id użytkownika", required = true, example = "65b2d492a162224d2a3e957d")
     })
-    //@PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     @GetMapping("/{userId}")
     public  ResponseEntity<UserResponse> getSingleUser(@PathVariable String userId){
         return new ResponseEntity<>(userService.getUserByUserId(new ObjectId(userId)), HttpStatus.OK);

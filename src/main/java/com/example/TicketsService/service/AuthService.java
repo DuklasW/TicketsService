@@ -13,6 +13,7 @@ import com.example.TicketsService.security.jwt.JwtUtils;
 import com.example.TicketsService.security.service.RefreshTokenService;
 import com.example.TicketsService.security.service.UserDetailsImpl;
 import com.example.TicketsService.validate.UserValidator;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -137,7 +138,7 @@ public class AuthService {
         }
     }
 
-    public ResponseEntity<?> registerConsumer(SignUpConsumerRequest signUpConsumerRequest) {
+    public ResponseEntity<MessageResponse> registerConsumer(SignUpConsumerRequest signUpConsumerRequest) {
         try {
             userValidator.validate(signUpConsumerRequest);
 
@@ -150,7 +151,11 @@ public class AuthService {
 
             return ResponseEntity.ok(new MessageResponse("Consumer registered successfully!"));
 
-        } catch (Exception e) {
+        }catch(ValidationException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new MessageResponse(e.getMessage()));
+
+        }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new MessageResponse("Error occured: " + e.getMessage()));
         }
@@ -185,7 +190,6 @@ public class AuthService {
     private UserEntity createUser(SignUpRequest signUpRequest, RoleEnum ROLE) throws Exception {
         Set<RoleEnum> userRoles = new HashSet<>(Collections.singletonList(ROLE));
         UserEntity userEntity = new UserEntity(signUpRequest.getEmail(), encoder.encode(signUpRequest.getPassword()), userRoles);
-
         if (userService.save(userEntity) == null) {
             throw new Exception("Error while saving the user");
         }

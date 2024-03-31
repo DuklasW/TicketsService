@@ -24,6 +24,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -63,20 +64,14 @@ public class EventControllerTest {
         Mockito.verify(eventRepository, Mockito.times(1)).saveAll(events);
     }
 
-//    @Test
-//    void createEvents_shouldReturnBadRequestResponse_whenValidationFails() {
-//
-//    }
-
     @Test
     void getEventById_shouldReturnEvent_whenEventExists() {
         CreateEventRequest request = createEventRequest();
         UserDetailsImpl userDetails = createUserDetails();
-        mockSecurityContext(userDetails);
 
         String eventId = "123456789123456789123456";
         EventEntity event = createEventEntity(request, userDetails);
-        event.setId(new ObjectId(eventId));;
+        event.setId(new ObjectId(eventId));
 
         EventResponse expectedResponse = createEventResponse(event);
 
@@ -86,10 +81,24 @@ public class EventControllerTest {
         EventResponse result = eventService.getEventById(eventId);
 
         Assertions.assertNotNull(result);
-        Assertions.assertEquals(event.getId(), result.getId());
+        Assertions.assertEquals(expectedResponse.getId(), result.getId());
 
         Mockito.verify(eventRepository, Mockito.times(1)).findById(new ObjectId(eventId));
         Mockito.verify(eventMapper, Mockito.times(1)).toResponse(event);
+    }
+
+    @Test
+    void getEventById_shouldReturnNotFoundResponse_whenEventDoesNotExist() {
+        String badEventId = "123456789123456789123456";
+
+        Mockito.when(eventRepository.findById(new ObjectId(badEventId))).thenReturn(Optional.empty());
+
+        Assertions.assertThrows(ResponseStatusException.class, () -> {
+            eventService.getEventById(badEventId);
+        });
+
+        Mockito.verify(eventRepository, Mockito.times(1)).findById(new ObjectId(badEventId));
+        Mockito.verify(eventMapper, Mockito.never()).toResponse(Mockito.any(EventEntity.class));
     }
 
     private EventResponse createEventResponse(EventEntity event) {

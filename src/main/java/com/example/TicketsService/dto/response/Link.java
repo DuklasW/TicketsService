@@ -10,4 +10,15 @@ public class Link {
     private String href;
     private String rel;
     private String method;
+
+
+    public Link() {
+
+    }
+
+    public Link(String url, String approve, String get) {
+        this.href = url;
+        this.rel = approve;
+        this.method = get;
+    }
 }

@@ -17,14 +17,12 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.FieldType;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Document(collection = "users")
 public class UserEntity {
-    //TODO ZMIENIAM Z STRING na OBJECTID
     @Id
     private ObjectId id;
     @Indexed(unique = true)
@@ -42,11 +40,11 @@ public class UserEntity {
     private RefreshTokenEntity refreshToken;
 
     @JsonIgnore
-    public UserEntity(ObjectId id, String email, String password, List<String> roles) {
+    public UserEntity(ObjectId id, String email, String password, Set<RoleEnum> roles) {
         this.id = id;
         this.email = email;
         this.password = password;
-        this.roles = roles;
+        this.roles = new ArrayList<>(roles.stream().map(RoleEnum::name).collect(Collectors.toList()));
     }
 
     @JsonIgnore
@@ -71,6 +69,6 @@ public class UserEntity {
 
     @JsonIgnore
     public String getIdAsString(){
-        return this.id.toHexString();
+        return id.toHexString();
     }
 }
