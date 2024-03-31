@@ -11,7 +11,8 @@ Aplikacja Obsługi Biletów demonstruje solidne zrozumienie tworzenia aplikacji 
 2. [Architektura](#architektura)
 3. [Jak Zacząć](#jak-zacząć)
 4. [Dokumentacja API](#dokumentacja-api)
-5. [Licencja](#licencja)
+5. [Autor](#autor)
+6. [Licencja](#licencja)
 
 ### Funkcje
 
