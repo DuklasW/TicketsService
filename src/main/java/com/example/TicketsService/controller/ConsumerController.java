@@ -1,6 +1,7 @@
 package com.example.TicketsService.controller;
 
 import com.example.TicketsService.dto.request.CommentRequest;
+import com.example.TicketsService.dto.response.CommentResponse;
 import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.dto.response.PurchaseReponse;
 import com.example.TicketsService.dto.response.UserResponse;
@@ -42,18 +43,29 @@ public class ConsumerController {
 
     @Operation(summary = "Historia biletów użytkownika", description="Wyświetla historię biletów użytkownika. Tylko dla użytkowników z rolą ROLE_CONSUMER")
     @PreAuthorize("hasRole('ROLE_CONSUMER')")
-    @PostMapping("/ticketHistory")
+    @GetMapping("/ticketHistory")
     public ResponseEntity<?> getTicketHistory(){
-            UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            String userEmail = userDetails.getEmail();
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userEmail = userDetails.getEmail();
 
-            List<PurchaseReponse> purchases = consumerService.getTicketHistory(userEmail);
-            return ResponseEntity.ok(purchases);
+        List<PurchaseReponse> purchases = consumerService.getTicketHistory(userEmail);
+        return ResponseEntity.ok(purchases);
+    }
+
+    @Operation(summary = "Historia komentarzy użytkownika", description="Wyświetla historię komentarzy użytkownika. Tylko dla użytkowników z rolą ROLE_CONSUMER")
+    @PreAuthorize("hasRole('ROLE_CONSUMER')")
+    @GetMapping("/commentHistory")
+    public ResponseEntity<?> getCommentHistory(){
+        UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userEmail = userDetails.getEmail();
+
+        List<CommentResponse> comments = consumerService.getCommentHistory(userEmail);
+        return ResponseEntity.ok(comments);
     }
 
     @Operation(summary = "Pobierz wszystkie bilety użytkownika o określonym id", description="Wyświetla listę biletów użytkownika po podaniu jego id. Tylko dla administracji.",
             parameters = {
-            @Parameter(name = "userId", description = "Identyfikator użytkownika", required = true, example = "65b2d492a162224d2a3e957e")
+            @Parameter(name = "userId", description = "Identyfikator użytkownika", required = true, example = "65b2d492a162224d2a3e957d")
     })
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     @GetMapping("/ticketHistory/{userId}")
@@ -61,6 +73,18 @@ public class ConsumerController {
         UserResponse user = userService.getUserByUserId(new ObjectId(userId));
         List<PurchaseReponse> purchases = consumerService.getTicketHistory(user.getEmail());
         return ResponseEntity.ok(purchases);
+    }
+
+    @Operation(summary = "Pobierz wszystkie komentarze użytkownika o określonym id", description="Wyświetla listę komentarzy użytkownika po podaniu jego id. Tylko dla administracji.",
+            parameters = {
+                    @Parameter(name = "userId", description = "Identyfikator użytkownika", required = true, example = "65b2d492a162224d2a3e957d")
+            })
+    @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @GetMapping("/commentHistory/{userId}")
+    public ResponseEntity<List<CommentResponse>> getCommentById(@PathVariable String userId){
+        UserResponse user = userService.getUserByUserId(new ObjectId(userId));
+        List<CommentResponse> comments = consumerService.getCommentHistory(user.getEmail());
+        return ResponseEntity.ok(comments);
     }
 
     //TODO dodać sprawdzanie czy użytkownik zakupił bilet na ostatnie wydarzenie tego artysty

@@ -10,4 +10,6 @@ import java.util.List;
 public interface CommentRepository  extends MongoRepository<CommentEntity, Object> {
 
     List<CommentEntity> findByArtistId(ObjectId artistId);
+
+    List<CommentEntity> findByConsumerId(ObjectId consumerId);
 }

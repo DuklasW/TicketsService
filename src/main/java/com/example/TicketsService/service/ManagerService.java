@@ -54,7 +54,6 @@ public class ManagerService {
     public ResponseEntity<List<ArtistResponse>> getArtistsByManagerId(ObjectId managerId) {
         List<ArtistEntity> artists = artistService.getArtistByManagerId(managerId);
         List<ArtistResponse> responseList = artistMapper.toResponses(artists);
-
         return new ResponseEntity<>(responseList, HttpStatus.OK);
     }
 

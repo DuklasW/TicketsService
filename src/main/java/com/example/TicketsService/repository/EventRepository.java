@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface EventRepository extends MongoRepository<EventEntity, ObjectId> {
 
-    boolean existsByCreatedByAndId(@NotBlank String createdBy, String id);
+    boolean existsByCreatedByManagerAndId(ObjectId createdByManager, ObjectId id);
 }

@@ -11,4 +11,6 @@ public interface ArtistRepository extends MongoRepository<ArtistEntity, ObjectId
     List<ArtistEntity> findByManagerId(ObjectId managerId);
 
     boolean existsByManagerIdAndNickname(ObjectId idByObjectID, String nickname);
+
+    boolean existsByIdAndManagerId(ObjectId artistId, ObjectId managerId);
 }

@@ -46,15 +46,17 @@ public class EventEntity {
     private String street;
     @NotBlank
     @Field(targetType = FieldType.OBJECT_ID)
-    private String createdBy;
+    private String createdByManager;
+    @Field(targetType = FieldType.OBJECT_ID)
+    private String artistId;
     @NotBlank
     private String name;
     @NotBlank
     private String description;
 
-    public EventEntity(Date date, List<String> artistId, Double price, Integer ticketsNumber, Integer ticketsBought, String location, String city, String postcode, String regon, String street, String createdBy, String name, String description) {
+    public EventEntity(Date date, List<String> artistName, Double price, Integer ticketsNumber, Integer ticketsBought, String location, String city, String postcode, String regon, String street, String createdByManager, String artistId, String name, String description) {
         this.date = date;
-        this.artistName = artistId;
+        this.artistName = artistName;
         this.price = price;
         this.ticketsNumber = ticketsNumber;
         this.ticketsBought = ticketsBought;
@@ -63,7 +65,8 @@ public class EventEntity {
         this.postcode = postcode;
         this.regon = regon;
         this.street = street;
-        this.createdBy = createdBy;
+        this.createdByManager = createdByManager;
+        this.artistId = artistId;
         this.name = name;
         this.description = description;
     }

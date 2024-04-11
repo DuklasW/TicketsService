@@ -53,7 +53,7 @@ public class ArtistController {
     parameters = {
             @Parameter(name = "artistId", description = "Id artysty", required = true, example = "657b3fd4554e451b737759ed")
     })
-    @PostMapping("/artistComments/{artistId}")
+    @GetMapping("/artistComments/{artistId}")
     public ResponseEntity<?> showArtistComment(@PathVariable String artistId){
         try {
             List<CommentResponse> responses = commentService.getArtistComments(artistId)

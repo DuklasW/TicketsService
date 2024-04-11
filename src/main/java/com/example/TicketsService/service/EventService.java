@@ -5,6 +5,8 @@ import com.example.TicketsService.dto.request.CreateEventRequest;
 import com.example.TicketsService.dto.response.EventResponse;
 import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.model.EventEntity;
+import com.example.TicketsService.model.ManagerEntity;
+import com.example.TicketsService.repository.ArtistRepository;
 import com.example.TicketsService.repository.EventRepository;
 import com.example.TicketsService.security.service.UserDetailsImpl;
 import com.example.TicketsService.validate.EventValidator;
@@ -28,6 +30,7 @@ public class EventService {
     private final EventValidator eventValidator;
     private final EventMapper eventMapper;
 
+
     @Autowired
     public EventService(EventRepository eventRepository, EventValidator eventValidator, EventMapper eventMapper){
         this.eventRepository = eventRepository;
@@ -39,7 +42,8 @@ public class EventService {
     public ResponseEntity<?> createEvents(CreateEventRequest request) {
         try {
             UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            eventValidator.validate(request);
+            eventValidator.validateEventCreation(request, userDetails);
+
             List<EventEntity> events = eventMapper.mapToEvents(request, userDetails);
             saveAll(events);
             return ResponseEntity.ok(new MessageResponse("Created event successfully"));
@@ -50,8 +54,6 @@ public class EventService {
             return ResponseEntity.badRequest().body(new MessageResponse("Database error: " + e.getMessage()));
         }
     }
-
-
 
     private void saveAll(List<EventEntity> events) throws DataAccessException {
         eventRepository.saveAll(events);
@@ -80,7 +82,7 @@ public class EventService {
     }
 
     private boolean checkCanDeleteEvent(ObjectId userId, String eventId) {
-        return eventRepository.existsByCreatedByAndId(eventId, userId.toHexString());
+        return eventRepository.existsByCreatedByManagerAndId(userId, new ObjectId(eventId));
     }
 
     public EventResponse getEventById(String eventId) {
