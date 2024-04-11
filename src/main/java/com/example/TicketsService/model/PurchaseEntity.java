@@ -28,13 +28,15 @@ public class PurchaseEntity {
     private Integer tickets;
     private String payPalId;
     private String statusPay;
+    private Date expiredDate;
 
-    public PurchaseEntity(String eventId, Date date, ObjectId consumerId, Integer tickets, String payPalId, String statusPay) {
+    public PurchaseEntity(String eventId, Date date, ObjectId consumerId, Integer tickets, String payPalId, String statusPay, Date expiredDate) {
         this.eventId = eventId;
         this.date = date;
         this.consumerId = consumerId.toHexString();
         this.tickets = tickets;
         this.payPalId = payPalId;
         this.statusPay = statusPay;
+        this.expiredDate = expiredDate;
     }
 }

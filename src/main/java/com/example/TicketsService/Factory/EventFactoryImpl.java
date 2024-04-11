@@ -23,6 +23,7 @@ public class EventFactoryImpl implements EventFactory {
                 request.getRegon(),
                 request.getStreet(),
                 userDetails.getId().toHexString(),
+                request.getCreatedByArtist(),
                 request.getName(),
                 request.getDescription()
         );

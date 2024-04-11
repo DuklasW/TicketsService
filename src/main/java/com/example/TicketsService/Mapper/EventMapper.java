@@ -45,7 +45,7 @@ public class EventMapper extends AbstractMapper<EventEntity, EventResponse> {
         eventResponse.setPostcode(eventEntity.getPostcode());
         eventResponse.setRegon(eventEntity.getRegon());
         eventResponse.setStreet(eventEntity.getStreet());
-        eventResponse.setCreatedBy(eventEntity.getCreatedBy());
+        eventResponse.setArtistId(eventEntity.getArtistId());
         eventResponse.setName(eventEntity.getName());
         eventResponse.setDescription(eventEntity.getDescription());
 

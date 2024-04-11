@@ -21,7 +21,7 @@ public class EventResponse {
     private String postcode;
     private String regon;
     private String street;
-    private String createdBy;
+    private String artistId;
     private String name;
     private String description;
 }
