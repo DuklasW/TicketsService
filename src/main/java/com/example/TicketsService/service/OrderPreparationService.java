@@ -58,7 +58,7 @@ public class OrderPreparationService {
         request.put("purchase_units", purchaseUnits);
 
         Map<String, Object> applicationContext = new HashMap<>();
-        applicationContext.put("return_url", "https://node.codedream.eu");
+        applicationContext.put("return_url", "https://node.codedream.eu/accept-payment");
         applicationContext.put("cancel_url", "https://node.codedream.eu/cancel");
         request.put("application_context", applicationContext);
 
