@@ -5,16 +5,20 @@ import com.example.TicketsService.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Tag(name="User Controller", description = "Kontroler służący do sprawdzania użytkowników, tylko dla administracji")
 @RestController
+@Validated
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RequestMapping("/api/test/user")
 public class UserController {
@@ -43,11 +47,11 @@ public class UserController {
     }
     @Operation(summary = "Sprawdzenie czy email jest zajęty", description = "Pozwala na sprawdzenie, czy istnieje użytkownik o podanym email, tylko dla administracji",
             parameters = {
-                    @Parameter(name = "email", description = "Email użytkownika", required = true, example = "consumer@consumer.com")
+                    @Parameter(name = "email", description = "Email użytkownika", required = true, example = "consumer@user.pl")
             })
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     @GetMapping("/email/{email}")
-    public ResponseEntity<Boolean> checkUserExist(@PathVariable String email){
+    public ResponseEntity<Boolean> checkUserExist(@Valid @Email @PathVariable String email){
         return new ResponseEntity<>(userService.checkUserExistByEmail(email), HttpStatus.OK);
     }
 }

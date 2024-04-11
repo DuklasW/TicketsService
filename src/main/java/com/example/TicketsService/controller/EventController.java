@@ -30,18 +30,19 @@ public class EventController {
         this.eventService = eventService;
     }
 
-    @Operation(summary = "Dodaj wydarzenia", description = "Pozwala utworzyć jedno lub więcej nowych wydarzeń na podstawie przekazanych danych wejściowych")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Dodaj wydarzenia", description = "Pozwala utworzyć jedno lub więcej nowych wydarzeń na podstawie przekazanych danych wejściowych. " +
+    "Endpoint dostępny dla zalogowanych użytkowników, z rolą 'MANAGER'")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("/create")
     public ResponseEntity<?> createEvents(@Valid @RequestBody CreateEventRequest request) {
         return eventService.createEvents(request);
     }
 
 
-    @Operation(summary = "Usuń wydarzenie", description = "Pozwala usunąć wydarzenie o podanym id",parameters = {
+    @Operation(summary = "Usuń wydarzenie", description = "Pozwala usunąć własne wydarzenie o podanym id",parameters = {
             @Parameter(name = "eventId", description = "Id wydarzenia", required = true, example = "65f3a110f4c72238e8e32579")
     })
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @DeleteMapping("/delete/{eventId}")
     public ResponseEntity<?> deleteEvent(@PathVariable String eventId) {
         return eventService.deleteEvent(eventId);
@@ -55,7 +56,7 @@ public class EventController {
     }
 
     @Operation(summary = "Pobierz wydarzenie o określonym id", description = "Pobiera wydarzenie o podanym id", parameters = {
-        @Parameter(name = "eventId", description = "Id wydarzenia", required = true, example = "65f3a110f4c72238e8e32579")
+        @Parameter(name = "eventId", description = "Id wydarzenia", required = true, example = "65b590e4aa11c12eb2294ba8")
     })
     @GetMapping("/{eventId}")
     public ResponseEntity<EventResponse> getEventById(@PathVariable String eventId) {

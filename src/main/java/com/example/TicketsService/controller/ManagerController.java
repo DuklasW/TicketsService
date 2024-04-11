@@ -35,8 +35,9 @@ public class ManagerController {
     }
 
     @Operation(summary = "Pobiera dane wszystkich managerów.",
-            description = "Wyświetla listę encji managerów"
+            description = "Wyświetla listę encji managerów, tylko dla administracji"
     )
+    @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     @GetMapping
     public ResponseEntity<List<ManagerResponse>> getAllManager(){
         List<ManagerResponse> managerResponses = managerService.getAllManagerResponses();
@@ -46,7 +47,7 @@ public class ManagerController {
 
     @Operation(summary = "Dodaję artystę do managera.",
             description = "Tworzy encję artysty kóry bedzie przypisany do managera. Trzeba być zalogowany na konto z uprawieniami managera")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
     @PostMapping("/addartist")
     public ResponseEntity<?> createArtist(@Valid @RequestBody CreateArtistRequest createArtistRequest, Principal principal){
 
@@ -65,16 +66,15 @@ public class ManagerController {
             description = "Wyświetla listę encji artystów przypisaną do konkretnego managera, potrzebuje id managera, dostępne dla administracji.")
     @PreAuthorize("hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     @PostMapping("/bymanager")
-    public ResponseEntity<List<ArtistResponse>> getArtistByManagerId(@Valid @RequestBody ListArtistByMangerIdRequest request){
-
+    public ResponseEntity<?> getArtistByManagerId(@RequestBody ListArtistByMangerIdRequest request){
         return managerService.getArtistsByManagerId(new ObjectId(request.getManagerId()));
     }
 
     @Operation(summary = "Wyświetla artystów zalogowanego managera",
             description = "Wyświetla listę encji artystów przypisaną managera który jest zalogowany na podstawie bererToken.")
-    @PreAuthorize("hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
-    @PostMapping("/myartist")
-    public ResponseEntity<List<ArtistResponse>> getArtistByManagerBererToken(){
+    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @GetMapping("/myartist")
+    public ResponseEntity<?> getArtistByManagerBererToken(){
 
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         ObjectId userId = userDetails.getId();

@@ -38,10 +38,11 @@ public class AuthController {
     }
 
     @Operation(summary = "Logowanie",
-            description = "Publiczny endpoint, pozwala się zalogować na wybrane konto. " +
+            description = "Publiczny endpoint umożliwiający logowanie na konto użytkownika. " +
                     "Zwraca podstawowe informacje o użytkowniku wraz z tokenem JWT. " +
-                    "W przypadku niepowodzenia autentykacji zwraca kod błędu 401. " +
-                    "Przykładowe konta: ..., ... , ... ")
+                    "W przypadku nieudanej autentykacji zwraca kod błędu 401. " +
+                    "Przykładowe konta do testów: admin@user.pl, consumer@user.pl , manager@user.pl "+
+                     "Dla wszystkich kont hasło to 'Passwordini123@'."   )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "OK - returns basic information about the user.",
                     content = { @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json",
@@ -98,6 +99,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "OK - Token refreshed successfully!"),
             @ApiResponse(responseCode = "400", description = "Error: Refresh token is not in database")
     })
+    @PreAuthorize("hasRole('ROLE_CONSUMER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
     @PostMapping("refreshtoken")
     public ResponseEntity<?> refreshToken(@Valid @RequestBody TokenRefreshRequest request){
         return refreshTokenService.refreshToken(request);

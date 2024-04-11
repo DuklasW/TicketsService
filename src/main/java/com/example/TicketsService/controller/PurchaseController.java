@@ -27,16 +27,17 @@ public class PurchaseController {
         this.purchaseService = purchaseService;
         this.payPallService = payPallService;
     }
-
-    @Operation(summary = "Kup bilet poprzez PayPall", description = "Pozwala kupić bilety na wybrane wydarzenie korzystając z płatności PayPall sandbox .Endpoint dostępny dla zalogowanych użytkowników, z rolą 'CONSUMER'")
-    @PreAuthorize("hasRole('ROLE_CONSUMER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_MODERATOR') or hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Kup bilet poprzez PayPall", description = "Pozwala kupić bilety na wybrane wydarzenie korzystając z płatności PayPall sandbox. " +
+            "Endpoint dostępny dla zalogowanych użytkowników, z rolą 'CONSUMER'. " +
+            "Nie można kupić biletu na wydarzenie, które już się odbyło, np. 65b590e4aa11c12eb2294ba8.")
+    @PreAuthorize("hasRole('ROLE_CONSUMER')")
     @PostMapping("/makePayment")
     public Mono<ResponseEntity<String>> makePayment(@Valid @RequestBody PurchaseTicketRequest request){
         return purchaseService.makePayment(request);
 
     }
 
-    @Operation(summary = "Akceptacja płatności", description = "Endpoint wymagany do zaakceptowania płatności po zakupie biletu.")
+    @Operation(summary = "Akceptacja płatności", description = "Endpoint demonstracyjny (niezabezpieczony), wymagany do zaakceptowania płatności po zakupie biletu.")
     @PostMapping("acceptPayment")
     public Mono<ResponseEntity<String>> acceptPayment(@Valid @RequestBody PurchaseAcceptRequest acceptRequest){
         return purchaseService.acceptPayment(acceptRequest);
@@ -49,5 +50,11 @@ public class PurchaseController {
         return payPallService.getAccessToken()
                 .map(tokenResponse -> ResponseEntity.ok(tokenResponse.getAccess_token()))
                 .defaultIfEmpty(ResponseEntity.notFound().build());
+    }
+
+    @Operation(summary = "Pobierz szczegóły zamówienia o id", description = "Endpoint demonstracyjny (niezabezpieczony) służący do pobrania podstawowych informacji o zamówieniu po podaniu jego identyfikatora.")
+            @GetMapping("/{payPallId}")
+    public ResponseEntity<?> getPaymentByPayPallId(@PathVariable String payPallId) {
+        return purchaseService.getPaymentById(payPallId);
     }
 }

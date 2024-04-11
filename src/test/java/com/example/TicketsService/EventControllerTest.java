@@ -172,6 +172,7 @@ public class EventControllerTest {
         request.setStreet("Starówkowa");
         request.setDescription("Wielki miks 3 wyjątkowych standuperów, którzy pokażą wspólny program");
 
+
         return request;
     }
 
