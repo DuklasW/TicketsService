@@ -14,7 +14,7 @@ import java.util.Set;
 @Setter
 public class SignUpRequest {
 
-    @Schema(example = "admin2@admin.com")
+    @Schema(example = "admin2@user.pl")
     @NotBlank
     @Email
     protected String email;

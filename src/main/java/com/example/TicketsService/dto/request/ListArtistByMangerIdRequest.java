@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 public class ListArtistByMangerIdRequest {
 
-    @Schema(example = "managerId")
+    @Schema(example = "65849f6889640528e3dbbfd8")
     @NotBlank
     private String managerId;
 }

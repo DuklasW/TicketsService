@@ -2,6 +2,7 @@ package com.example.TicketsService.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
@@ -14,6 +15,7 @@ public class CommentRequest {
     @Schema(example = "657b3fd4554e451b737759ed")
     private String artistId;
     @NotBlank
+    @Pattern(regexp = "^[^;'\"]*$", message = "Invalid comment description. Special characters are not allowed.")
     @Schema(example = "Najlepszy koncert na świecie!")
     private String description;
     @Min(value = 0, message = "Value must be greater than or equal to 0")

@@ -58,7 +58,7 @@ public class SignUpConsumerRequest extends SignUpRequest{
 
 
     //TODO Tylko do przejrzystszego tworzenia użytkownika w swaggerze - usunąć później pole email
-    @Schema(example = "jasiek3@user.com" )
+    @Schema(example = "jasiek3@user.pl" )
     @Override
     public String getEmail() {
         return super.getEmail();

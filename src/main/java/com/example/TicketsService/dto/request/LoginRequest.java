@@ -11,12 +11,12 @@ import lombok.Setter;
 @Setter
 public class LoginRequest {
 
-    @Schema(example = "consumer2@consumer.com")
+    @Schema(example = "consumer@user.pl")
     @NotBlank
     @Email
     private String email;
 
-    @Schema(example = "password")
+    @Schema(example = "Passwordini123@")
     @NotBlank
     @Size(min = 8, message = "Password too short")
     private String password;

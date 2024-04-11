@@ -56,6 +56,10 @@ public class CreateEventRequest {
     @NotBlank
     private String description;
 
+    @Schema(example = "65b42dcc7e988b05de03b0a3")
+    @NotBlank
+    private String createdByArtist;
+
     @JsonIgnore
     public boolean isValidRegon(){
         return RegonPolandEnum.formDisplayRegon(regon) != null;

@@ -10,8 +10,8 @@ import lombok.Setter;
 @Setter
 public class PurchaseTicketRequest {
 
-    //TODO dodać po zmianie bazy
     @NotBlank
+    @Schema(example ="65b5910a8d03341de160c339")
     private String eventId;
     @NotNull
     @Min(1)

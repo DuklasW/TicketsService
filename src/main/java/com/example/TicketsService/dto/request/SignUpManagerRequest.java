@@ -68,7 +68,7 @@ public class SignUpManagerRequest extends SignUpRequest{
     }
 
     //TODO Tylko do przejrzystszego tworzenia użytkownika w swaggerze - usunąć później pole email
-    @Schema(example = "Manager.dody@manager.com")
+    @Schema(example = "Manager.dody@user.pl")
     @Override
     public String getEmail() {
         return email;
