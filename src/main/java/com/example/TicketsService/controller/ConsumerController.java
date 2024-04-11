@@ -22,7 +22,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
-import java.util.Optional;
 
 @Tag(name="Consumer Controller", description = "Kontroler służący do obsługi żądań związanych z użytkownikami")
 @CrossOrigin(origins = "*", maxAge = 3600)

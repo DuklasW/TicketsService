@@ -2,7 +2,6 @@ package com.example.TicketsService.controller;
 
 import com.example.TicketsService.dto.request.CreateArtistRequest;
 import com.example.TicketsService.dto.request.ListArtistByMangerIdRequest;
-import com.example.TicketsService.dto.response.ArtistResponse;
 import com.example.TicketsService.dto.response.ManagerResponse;
 import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.model.ArtistEntity;

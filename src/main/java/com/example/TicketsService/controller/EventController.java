@@ -3,7 +3,6 @@ package com.example.TicketsService.controller;
 
 import com.example.TicketsService.dto.request.CreateEventRequest;
 import com.example.TicketsService.dto.response.EventResponse;
-import com.example.TicketsService.model.EventEntity;
 import com.example.TicketsService.service.EventService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;

@@ -5,8 +5,6 @@ import com.example.TicketsService.dto.request.CreateEventRequest;
 import com.example.TicketsService.dto.response.EventResponse;
 import com.example.TicketsService.dto.response.MessageResponse;
 import com.example.TicketsService.model.EventEntity;
-import com.example.TicketsService.model.ManagerEntity;
-import com.example.TicketsService.repository.ArtistRepository;
 import com.example.TicketsService.repository.EventRepository;
 import com.example.TicketsService.security.service.UserDetailsImpl;
 import com.example.TicketsService.validate.EventValidator;

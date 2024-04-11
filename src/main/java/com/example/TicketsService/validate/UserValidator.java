@@ -1,6 +1,5 @@
 package com.example.TicketsService.validate;
 
-import com.example.TicketsService.dto.request.SignUpConsumerRequest;
 import com.example.TicketsService.dto.request.SignUpRequest;
 import com.example.TicketsService.service.UserService;
 import jakarta.validation.ValidationException;

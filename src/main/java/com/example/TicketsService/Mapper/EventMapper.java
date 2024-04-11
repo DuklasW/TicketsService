@@ -7,10 +7,7 @@ import com.example.TicketsService.dto.response.EventResponse;
 import com.example.TicketsService.model.EventEntity;
 import com.example.TicketsService.security.service.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.lang.reflect.Field;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 

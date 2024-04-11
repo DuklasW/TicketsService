@@ -8,7 +8,6 @@ import jakarta.validation.ValidationException;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Component;
 import com.example.TicketsService.service.ManagerService;
-import com.example.TicketsService.service.EventService;
 
 @Component
 public class EventValidator implements Validator {

@@ -114,7 +114,7 @@ public class EventControllerTest {
         response.setPostcode(event.getPostcode());
         response.setRegon(event.getRegon());
         response.setStreet(event.getStreet());
-        response.setCreatedBy(event.getCreatedBy());
+        response.setArtistId(event.getArtistId());
         response.setName(event.getName());
         response.setDescription(event.getDescription());
         return response;
@@ -133,7 +133,7 @@ public class EventControllerTest {
         event.setPostcode(request.getPostcode());
         event.setRegon(request.getRegon());
         event.setStreet(request.getStreet());
-        event.setCreatedBy(userDetails.getId().toHexString());
+        event.setCreatedByManager(userDetails.getId().toHexString());
         event.setName(request.getName());
         event.setDescription(request.getDescription());
         return event;
