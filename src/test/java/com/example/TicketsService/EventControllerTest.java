@@ -59,7 +59,7 @@ public class EventControllerTest {
         Assertions.assertEquals(HttpStatus.OK, response.getStatusCode());
         Assertions.assertEquals("Created event successfully", ((MessageResponse) Objects.requireNonNull(response.getBody())).getMessage());
 
-        Mockito.verify(eventValidator, Mockito.times(1)).validate(request);
+        Mockito.verify(eventValidator, Mockito.times(1)).validateEventCreation(request, userDetails);
         Mockito.verify(eventMapper, Mockito.times(1)).mapToEvents(request, userDetails);
         Mockito.verify(eventRepository, Mockito.times(1)).saveAll(events);
     }
