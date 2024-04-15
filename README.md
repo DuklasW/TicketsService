@@ -2,17 +2,20 @@
 
 Aplikacja Obsługi Biletów to skalowalny i wydajny backend dla strony internetowej do sprzedaży biletów, zbudowany przy użyciu technologii Spring Boot i MongoDB. Aplikacja zapewnia kompleksowe API do zarządzania wydarzeniami artystycznymi, obsługi zakupów biletów oraz interakcji użytkowników.
 Główne funkcje aplikacji obejmują rejestrację i uwierzytelnianie użytkowników, zarządzanie wydarzeniami i artystami, integrację z systemem płatności PayPal oraz możliwość dodawania komentarzy i ocen. Dzięki warstwowej architekturze i wykorzystaniu najlepszych praktyk, aplikacja jest łatwa w utrzymaniu i rozbudowie.
-Aplikacja Obsługi Biletów demonstruje solidne zrozumienie tworzenia aplikacji backendowych przy użyciu popularnych frameworków i technologii. Może służyć jako przykład umiejętności programistycznych i doświadczenia w budowaniu skalowalnych i funkcjonalnych aplikacji webowych.
 
+## Dostęp do Dokumentacji API przez Swagger
 
+Aby ułatwić testowanie i eksplorację API, udostępniam dokumentację Swagger, która jest dostępna online. Można przetestować dostępne endpointy i zapoznać się z funkcjonalnościami API, odwiedzając [node.codedream.eu](https://node.codedream.eu:18080/swagger-ui/index.html).
 
 ### Spis Treści
 1. [Funkcje](#funkcje)
-2. [Architektura](#architektura)
-3. [Jak Zacząć](#jak-zacząć)
-4. [Dokumentacja API](#dokumentacja-api)
-5. [Autor](#autor)
-6. [Licencja](#licencja)
+2. [Technologie](#technologie)
+3. [Architektura](#architektura)
+4. [Jak Zacząć](#jak-zacząć)
+5. [Dokumentacja API](#dokumentacja-api)
+6. [Testowanie](#testowanie)
+7. [Autor](#autor)
+8. [Licencja](#licencja)
 
 ### Funkcje
 
@@ -21,7 +24,6 @@ Aplikacja Obsługi Biletów oferuje szereg funkcji, które usprawniają zarządz
 1. **Rejestracja i logowanie użytkowników:**
    - Aplikacja obsługuje rejestrację i logowanie dla różnych typów użytkowników: administratorów, menedżerów oraz konsumentów.
    - Każdy typ użytkownika ma dostęp do odpowiednich funkcji i uprawnień zgodnie z przypisaną rolą.
-   - Proces rejestracji jest prosty i intuicyjny, umożliwiając użytkownikom szybkie utworzenie konta.
    - Logowanie odbywa się za pomocą adresu e-mail i hasła, zapewniając bezpieczny dostęp do systemu.
 
 2. **Zarządzanie wydarzeniami:**
@@ -30,18 +32,17 @@ Aplikacja Obsługi Biletów oferuje szereg funkcji, które usprawniają zarządz
    - Konsumenci mają dostęp do przeglądania listy dostępnych wydarzeń, wraz z szczegółowymi informacjami na ich temat.
 
 3. **Zarządzanie artystami:**
-   - Menedżerowie mogą dodawać informacje o artystach, takie jak nazwa, opis oraz rodzaj ich działalności artystycznej.
+   - Menedżerowie mogą dodawać informacje o artystach, między innymi takie jak nazwa, opis oraz rodzaj ich działalności artystycznej.
    - Aplikacja przechowuje kompleksową listę artystów, którą można przeglądać i przeszukiwać.
 
 4. **Zakup biletów:**
    - Konsumenci mogą przeglądać dostępne wydarzenia i wybierać interesujące ich opcje.
-   - W takcie zakupów, bilety są rezerwowane na określony czas aby na spokojnie doko
+   - W takcie zakupów, bilety są rezerwowane na określony czas aby na spokojnie dokonać płatnośći.
    - Integracja z systemem płatności PayPal zapewnia bezpieczne i wygodne przetwarzanie transakcji.
-   - Po zakupie, bilety są przypisywane do konta użytkownika i dostępne do pobrania.
+   - Po zakupie, bilety są przypisywane do konta użytkownika.
 
 5. **Komentarze i oceny:**
    - Konsumenci mogą wyrazić swoją opinię na temat artystów poprzez dodawanie komentarzy i ocen.
-   - Aplikacja udostępnia formularz, za pomocą którego użytkownicy mogą wpisać swój komentarz i wybrać odpowiednią ocenę.
    - Wszystkie komentarze i oceny są widoczne dla innych użytkowników, co pomaga w budowaniu społeczności i dzieleniu się opiniami.
 
 6. **Autentykacja i Autoryzacja:**
@@ -50,6 +51,18 @@ Aplikacja Obsługi Biletów oferuje szereg funkcji, które usprawniają zarządz
    - Token dostępu jest używany w kolejnych żądaniach, aby zweryfikować tożsamość użytkownika i autoryzować dostęp do chronionych zasobów.
    - Aplikacja obsługuje również tokeny odświeżania, które umożliwiają uzyskanie nowego tokenu dostępu bez konieczności ponownego logowania, zapewniając płynne korzystanie z systemu.
 
+### Technologie
+Projekt wykorzystuje następujące technologie i narzędzia:
+   - **Spring Boot 3.1.4**: Uproszczenie konfiguracji i uruchamiania aplikacji Springowych.
+   - **Java 17**
+   - **MongoDB**: Elastyczna baza danych NoSQL do efektywnego przechowywania i zarządzania danymi.
+   - **Spring Security**: Rozbudowane wsparcie dla autentykacji i autoryzacji.
+   - **Spring Data MongoDB**: Integracja z MongoDB, ułatwiająca operacje na bazie danych.
+   - **JWT (JSON Web Tokens)**: Bezstanowy mechanizm uwierzytelniania dla aplikacji webowych.
+   - **Spring Web**: Tworzenie RESTful web services.
+   - **Spring Doc OpenAPI**: Automatyczne generowanie dokumentacji API.
+   - **PayPal API**: Integracja z systemem płatności PayPal, umożliwiająca bezpieczne transakcje finansowe.
+   - **Mockito**: Framework do tworzenia testów jednostkowych w Javie, pozwalający na mockowanie zależności w testowanych klasach.
 
 ### Architektura
 
@@ -70,7 +83,7 @@ Aplikacja Obsługi Biletów została zbudowana zgodnie z wzorcem architektury wa
    - Zapewniają metody do pobierania, zapisywania, aktualizacji i usuwania danych.
    - Repozytoria zwracają obiekty encji, które reprezentują dane przechowywane w bazie danych.
 
-4. **Warstwa mapowania (Mappery):**
+4. **Mappery:**
    - Mappery są używane do konwersji między obiektami DTO a obiektami encji.
    - Ułatwiają przekształcanie danych między różnymi reprezentacjami, co pozwala na oddzielenie warstwy prezentacji od warstwy dostępu do danych.
 
@@ -87,21 +100,27 @@ Aplikacja Obsługi Biletów została zbudowana zgodnie z wzorcem architektury wa
    - Odzwierciedlają strukturę dokumentów w kolekcjach MongoDB i zawierają adnotacje mapowania obiektowo-dokumentowego.
 
 Dzięki zastosowaniu architektury warstwowej i wykorzystaniu odpowiednich wzorców projektowych, aplikacja Obsługi Biletów osiąga wysoką modularność, skalowalność i łatwość utrzymania. Poszczególne warstwy są luźno powiązane, co umożliwia niezależny rozwój i testowanie każdej z nich. Takie podejście ułatwia również wprowadzanie zmian i dodawanie nowych funkcjonalności w przyszłości.
-Ponadto, aplikacja przestrzega zasad SOLID, co przyczynia się do tworzenia czystego i łatwo rozszerzalnego kod
+Ponadto, aplikacja przestrzega zasad SOLID, co przyczynia się do tworzenia czystego i łatwo rozszerzalnego kodu
 
 ### Jak Zacząć
 
 Aby uruchomić aplikację backendową Obsługi Biletów lokalnie:
 1. Sklonuj repozytorium.
+   -git clone https://github.com/DuklasW/TicketsService.git
 2. Zainstaluj wymagane zależności.
-3. Skonfiguruj połączenie z MongoDB.
-4. Skonfiguruj plik .env podając tam potrzebne dane
+   -mvn install
+4. Skonfiguruj plik `.env` w katalogu resources projektu, podając potrzebne dane, takie jak dane dostępowe do MongoDB Atlas i konfiguracja PayPal.
 5. Uruchom aplikację.
 6. Korzystaj z punktów końcowych API za pomocą narzędzi takich jak Postman lub cURL.
 
 ### Dokumentacja API
 
-Dokumentacja API jest dostępna pod adresem http://localhost:8080/swagger-ui.html, gdy aplikacja działa lokalnie. Zapewnia ona szczegółowe informacje na temat dostępnych punktów końcowych, formatów żądań/odpowiedzi oraz wymagań dotyczących uwierzytelnienia.
+Dokumentacja API jest dostępna pod adresem http://localhost:18080/swagger-ui/index.html, gdy aplikacja działa lokalnie. Zapewnia ona szczegółowe informacje na temat dostępnych punktów końcowych, formatów żądań/odpowiedzi oraz wymagań dotyczących uwierzytelnienia.
+
+### Testowanie
+
+Aplikacja zawiera testy jednostkowe i integracyjne napisane z użyciem JUnit i Mockito. Aby uruchomić testy, użyj polecenia:
+	-mvn test
 
 ### Autor
 Autor: Wojciech Duklas
